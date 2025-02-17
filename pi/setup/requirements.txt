@@ -1,2 +1,0 @@
-picamera2
-cv2
