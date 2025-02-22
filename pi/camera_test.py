@@ -1,24 +1,24 @@
-from picamera2 import Picamera2
 import cv2
+# fyi this is ai generated
 
-# Initialize the camera
-picam2 = Picamera2()
+# open the Raspberry Pi camera (use 0 for the default camera)
+cap = cv2.VideoCapture(0)
 
-# Configure camera for preview (default configuration)
-picam2.configure(picam2.create_preview_configuration())
+if not cap.isOpened():
+    print("Error: Could not open camera.")
+    exit()
 
-# Start the camera
-picam2.start()
-
-# Continuously capture frames and display them
 while True:
-    frame = picam2.capture_array()  # Capture frame
-    cv2.imshow("Camera Feed", frame)  # Show the frame
+    ret, frame = cap.read()
+    if not ret:
+        print("Error: Failed to capture image.")
+        break
 
-    # Exit loop if 'q' is pressed
+    cv2.imshow("Raspberry Pi Camera Test", frame)
+
+    # press 'q' to exit
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# Release resources
+cap.release()
 cv2.destroyAllWindows()
-picam2.stop()

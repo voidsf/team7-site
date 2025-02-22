@@ -1,2 +1,1 @@
-picamera2
-cv2
+numpy==1.19.5
