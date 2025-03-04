@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
@@ -25,15 +27,26 @@ import {
   SearchIcon,
   Logo,
 } from "@/components/icons";
+import { useState } from "react";
 
 export const Navbar = () => {
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky">
+    <HeroUINavbar onMenuOpenChange={setIsMenuOpen} maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
+          className="lg:hidden"
+          />
+        
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <span className="font-bold">EcoSort</span>
         </NavbarBrand>
+
+        {/* wide navbar for large screens */}
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
@@ -50,7 +63,29 @@ export const Navbar = () => {
             </NavbarItem>
           ))}
         </ul>
+
+          
+
+        
       </NavbarContent>
+
+      {/* skinny navbar for snatched screens */}
+      <NavbarMenu>
+        {siteConfig.navItems.map((item, index) => (
+          <NavbarMenuItem key={`${item}${index}`}>
+            <NextLink className={clsx(
+                  linkStyles({ color: "foreground" }),
+                  "data-[active=true]:text-primary data-[active=true]:font-medium",
+                )}
+                color="foreground"
+                href={item.href}
+              >
+                {item.label}
+                </NextLink>
+          </NavbarMenuItem>
+        ))}
+      </NavbarMenu>
+
     </HeroUINavbar>
   );
 };
