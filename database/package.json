@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "create-db" : "tsc -b | node ./build/create-database.js"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9",
+    "typescript": "^5.8.2"
+  }
+}
