@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "create-db" : "tsc -b | node ./build/create-database.js"
   },
   "dependencies": {
+    "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
