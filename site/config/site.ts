@@ -8,6 +8,14 @@ export const siteConfig = {
       label: "Mission",
       href: "/",
     },
+    { 
+      label: "Login",
+      href: "/login",
+    },
+    {
+      label: "Sign Up",
+      href: "/signup",
+    },
 
   ],
 };
