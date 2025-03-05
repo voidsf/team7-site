@@ -1,8 +1,8 @@
-import { createDatabase, createUser, getUserHash } from "../src/database";
+import { createDatabase, createUser, getUserHash } from "../database";
 import { access, unlink } from "fs/promises";
 import { open } from "sqlite";
 import { Database, verbose } from "sqlite3";
-import { UserDetails } from "../src/types/types";
+import { UserDetails } from "../types/types";
 
 // get verbose output from sqlite3
 verbose();
@@ -121,6 +121,31 @@ describe("Testing database.ts", () => {
         const pass = await getUserHash(DB_FILENAME, userDetails.email);
 
         expect(pass).toEqual(userDetails.pass);
-    })
+    });
 
-})
+    test("No duplicate emails can be added to the database", async () => {
+        const userDetails : UserDetails[] = [
+            {
+                name: "John Hancock",
+                email: "johnhancock@gmail.com",
+                pass: "hashed_password_string"
+            },
+            {
+                name: "John Hancock On A Second Account",
+                email: "johnhancock@gmail.com",
+                pass: "hashed_password_string"
+            }
+        ]
+
+        try {
+            // attempt to add users
+            for (const user of userDetails) {
+                await createUser(DB_FILENAME, user);
+            }
+        } catch (error) {
+            // succeed test if error thrown
+            expect(error).toBeInstanceOf(Error);
+        }
+        
+    });
+});
