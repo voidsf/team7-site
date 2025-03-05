@@ -109,4 +109,18 @@ describe("Testing database.ts", () => {
         expect(userInfo).toEqual(expected);
     });
 
+    test("User password can be retrieved from the database", async () => {
+        const userDetails : UserDetails = {
+            name: "Jane Doe", 
+            email: "janedoe@hotmail.com",
+            pass: "hashed_password_string"
+        };
+
+        await createUser(DB_FILENAME, userDetails);
+
+        const pass = await getUserHash(DB_FILENAME, userDetails.email);
+
+        expect(pass).toEqual(userDetails.pass);
+    })
+
 })

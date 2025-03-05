@@ -4,6 +4,8 @@
         "module": "CommonJS",
         "sourceMap": true,
         "rootDir": "src",
-        "outDir": "build"
-    }
+        "outDir": "build",
+        
+    },
+    "include": ["src/**/*.ts"]
 }
