@@ -2,11 +2,13 @@ import { createDatabase, createUser, getUserHash } from "../src/database";
 import { access, unlink } from "fs/promises";
 import { open } from "sqlite";
 import { Database, verbose } from "sqlite3";
+import { UserDetails } from "../src/types/types";
 
 // get verbose output from sqlite3
 verbose();
 
 const DB_FILENAME = "database.db";
+let db;
 
 /**
  * Deletes the database at the given filename, if it exists,
@@ -23,19 +25,20 @@ async function flickerDatabase(filename: string){
     }
 
     await createDatabase(DB_FILENAME);
+
+    db = await open({
+        filename: DB_FILENAME,
+        driver: Database
+    });
 }
+
+beforeAll(() => {
+    return flickerDatabase(DB_FILENAME);
+});
+
 
 describe("Testing database.ts", () => {
     test("Database should be created with correct table schema", async () => {
-
-        // destroy database and recreate if exists
-        await flickerDatabase(DB_FILENAME);
-
-        // check database schemas
-        const db = await open({
-            filename: DB_FILENAME,
-            driver: Database
-        });
 
         const table_info = await db.all("PRAGMA table_info(users)");
 
@@ -79,5 +82,22 @@ describe("Testing database.ts", () => {
         
     });
     
-    
+    test("Users can be added to the database", async () => {
+
+        // create a user
+        const userDetails : UserDetails = {
+            name: "John Smith", 
+            email: "johnsmith@gmail.com",
+            pass: "hashed_password_string"
+        }
+
+        await createUser(DB_FILENAME, userDetails);
+
+        // check if user was added
+        const userInfo = await db.get("SELECT * FROM users WHERE email = $email", {
+            $email: userDetails.email
+        });
+
+        console.log(userInfo);
+    });
 })

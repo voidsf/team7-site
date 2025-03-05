@@ -1,17 +1,15 @@
 import { verbose, Database } from "sqlite3";
 import { open } from "sqlite";
+import { UserDetails } from "./types/types";
 
 // debugging, remove for release
 verbose();
 
 
-export async function createUser(fname: string, name : String, email : String, pass : String) { 
+export async function createUser(fname: string, userDetails: UserDetails) { 
     /**
      * Writes the given user data to the database
      * 
-     * @param name The user's name
-     * @param email The user's email
-     * @param pass A hash of the user's password
      */
 
     const db = await open({
@@ -22,9 +20,9 @@ export async function createUser(fname: string, name : String, email : String, p
     const result = await db.run(
         `INSERT INTO users (name, email, pass) VALUES ($name, $email, $pass)`,
         {
-            $name: name, 
-            $email: email, 
-            $pass: pass
+            $name: userDetails.name, 
+            $email: userDetails.email, 
+            $pass: userDetails.pass
         }
     );
 }
