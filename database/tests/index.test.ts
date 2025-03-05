@@ -98,6 +98,13 @@ describe("Testing database.ts", () => {
             $email: userDetails.email
         });
 
-        console.log(userInfo);
+        const expected = {
+            id: 1, 
+            name: 'John Smith',
+            email: 'johnsmith@gmail.com',
+            pass: 'hashed_password_string'
+        }
+
+        expect(userInfo).toEqual(expected);
     });
 })
