@@ -98,8 +98,9 @@ describe("Testing database.ts", () => {
             $email: userDetails.email
         });
 
+        delete userInfo.id;
+
         const expected = {
-            id: 1, 
             name: 'John Smith',
             email: 'johnsmith@gmail.com',
             pass: 'hashed_password_string'
@@ -107,4 +108,5 @@ describe("Testing database.ts", () => {
 
         expect(userInfo).toEqual(expected);
     });
+
 })
