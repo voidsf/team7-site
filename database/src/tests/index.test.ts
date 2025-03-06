@@ -1,151 +1,219 @@
-import { createDatabase, createUser, getUserHash } from "../database";
+import { createDatabase, createUser, getUserHash, Status, SUCCESS } from "../database";
 import { access, unlink } from "fs/promises";
 import { open } from "sqlite";
 import { Database, verbose } from "sqlite3";
 import { UserDetails } from "../types/types";
-
-// get verbose output from sqlite3
-verbose();
+import * as fs from "fs/promises"; 
 
 const DB_FILENAME = "database.db";
-let db;
 
-/**
- * Deletes the database at the given filename, if it exists,
- * then creates a new database at the same filename.
- * @param filename 
- */
-async function flickerDatabase(filename: string){ 
-            
-    // destroy database if exists
+async function fileExists(fname: string) : Promise<Boolean> {
     try {
-        await unlink(DB_FILENAME);
+        await fs.stat(fname);
+        return true;
     } catch (error) {
-        // File does not exist, this is what we want
+        return false;
     }
-
-    await createDatabase(DB_FILENAME);
-
-    db = await open({
-        filename: DB_FILENAME,
-        driver: Database
-    });
 }
 
-beforeAll(() => {
-    return flickerDatabase(DB_FILENAME);
-});
+async function isDeletable(fname: string) {
+    try {
+        await fs.unlink(fname);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
 
+describe("Files must not remain locked after function execution", () => {
+    // tests here are reliant on the previous tests, if one fails, they will cascade.
 
-describe("Testing database.ts", () => {
-    test("Database should be created with correct table schema", async () => {
-
-        const table_info = await db.all("PRAGMA table_info(users)");
-
-        // user table schema
-        const expected = 
-        [
-            {
-                cid: 0,
-                name: "id", 
-                type: "INTEGER", 
-                notnull: 0, 
-                dflt_value: null,
-                pk: 1
-            },{
-                cid: 1,
-                name: 'name',
-                type: 'TEXT',
-                notnull: 1,
-                dflt_value: null,
-                pk: 0
-            },
-            {
-                cid: 2,
-                name: 'email',
-                type: 'TEXT',
-                notnull: 1,
-                dflt_value: null,
-                pk: 0
-            },
-            {
-                cid: 3,
-                name: 'pass',
-                type: 'TEXT',
-                notnull: 1,
-                dflt_value: null,
-                pk: 0
-            }
-        ];
-
-        expect(table_info).toEqual(expected);
-        
-    });
-    
-    test("Users can be added to the database", async () => {
-
-        // create a user
-        const userDetails : UserDetails = {
-            name: "John Smith", 
-            email: "johnsmith@gmail.com",
-            pass: "hashed_password_string"
+    beforeAll(async () => {
+        // check if file exists, if it does, kill it 
+        if (await fileExists(DB_FILENAME)) {
+            await unlink(DB_FILENAME);
         }
+    })
+
+    test("createDatabase", async () => {
+
+        // create database and grab status 
+        let status = await createDatabase(DB_FILENAME);
+        expect(status).toBe(SUCCESS);
+
+        // ping file to see if it is unlocked
+        expect(await isDeletable(DB_FILENAME)).toBe(true);
+    });
+
+    test("createUser", async () => {
+        // create database
+        await createDatabase(DB_FILENAME);
+
+        // create user and grab status
+        let userDetails: UserDetails = {
+            name: "test",
+            email: "email@email.com",
+            pass: "pass"
+        };
+
+        let status = await createUser(DB_FILENAME, userDetails);
+        expect(status).toBe(SUCCESS);
+
+        // ping file for unlock 
+        expect(await isDeletable(DB_FILENAME)).toBe(true);
+    });
+
+    test("createUser (duplicate email)", async () => {
+        // create database
+        await createDatabase(DB_FILENAME);
+
+        // create user and grab status
+        let userDetails: UserDetails = {
+            name: "test",
+            email: "email@email.com",
+            pass: "pass"
+        };
 
         await createUser(DB_FILENAME, userDetails);
+        let status = await createUser(DB_FILENAME, userDetails);
 
-        // check if user was added
-        const userInfo = await db.get("SELECT * FROM users WHERE email = $email", {
-            $email: userDetails.email
-        });
+        expect(status.code).toBe(2);
 
-        delete userInfo.id;
-
-        const expected = {
-            name: 'John Smith',
-            email: 'johnsmith@gmail.com',
-            pass: 'hashed_password_string'
-        }
-
-        expect(userInfo).toEqual(expected);
+        // ping file for unlock 
+        expect(await isDeletable(DB_FILENAME)).toBe(true);
     });
 
-    test("User password can be retrieved from the database", async () => {
-        const userDetails : UserDetails = {
-            name: "Jane Doe", 
-            email: "janedoe@hotmail.com",
-            pass: "hashed_password_string"
+    test("getUserHash", async () => {
+        // setup
+        await createDatabase(DB_FILENAME);
+
+        let userDetails: UserDetails = {
+            name: "test",
+            email: "email@email.com",
+            pass: "pass"
         };
 
         await createUser(DB_FILENAME, userDetails);
 
-        const pass = await getUserHash(DB_FILENAME, userDetails.email);
+        // get hash
+        let hash = await getUserHash(DB_FILENAME, userDetails.email);
+        expect(hash.hash).toBe(userDetails.pass);
 
-        expect(pass).toEqual(userDetails.pass);
+        // ping file for unlock 
+        expect(await isDeletable(DB_FILENAME)).toBe(true);
     });
 
-    test("No duplicate emails can be added to the database", async () => {
-        const userDetails : UserDetails[] = [
-            {
-                name: "John Hancock",
-                email: "johnhancock@gmail.com",
-                pass: "hashed_password_string"
-            },
-            {
-                name: "John Hancock On A Second Account",
-                email: "johnhancock@gmail.com",
-                pass: "hashed_password_string"
-            }
-        ]
+    test("getUserHash (user not present)", async () => {
+        // setup
+        await createDatabase(DB_FILENAME);
 
-        try {
-            // attempt to add users
-            for (const user of userDetails) {
-                await createUser(DB_FILENAME, user);
-            }
-        } catch (error) {
-            // succeed test if error thrown
-            expect(error).toBeInstanceOf(Error);
-        }
+        let userDetails: UserDetails = {
+            name: "test",
+            email: "email@email.com",
+            pass: "pass"
+        };
+
+        // get hash
+        let hash = await getUserHash(DB_FILENAME, userDetails.email);
         
+        // expect failure
+        expect(hash.status.code).toBe(6);
+
+        // ping file for unlock 
+        expect(await isDeletable(DB_FILENAME)).toBe(true);
+    });
+
+    afterAll(async () => {
+        // cleanup
+        if (await fileExists(DB_FILENAME)) {
+            await unlink(DB_FILENAME);
+        }
+    })
+
+})
+
+describe("Database functions must return correct information", () => {
+    afterEach( async () => {
+        // cleanup
+        if (await fileExists(DB_FILENAME)) {
+            await unlink(DB_FILENAME);
+        }
+    })
+
+    test("createDatabase", async () => {
+        let status = await createDatabase(DB_FILENAME);
+        expect(status).toBe(SUCCESS);
+    });
+
+    test("createDatabase (duplicate)", async () => {
+        await createDatabase(DB_FILENAME);
+        let status = await createDatabase(DB_FILENAME);
+        expect(status.code).toBe(3);
+    });
+    
+    test("createUser", async () => {
+        await createDatabase(DB_FILENAME);
+
+        let userDetails: UserDetails = {
+            name: "test",
+            email: "test",
+            pass: "test" 
+        };
+
+        let status = await createUser(DB_FILENAME, userDetails);
+        expect(status).toBe(SUCCESS);
+
+    });
+
+    test("createUser (duplicate email)", async () => {
+        await createDatabase(DB_FILENAME);
+
+        let userDetails: UserDetails = {
+            name: "test",
+            email: "test",
+            pass: "test" 
+        };
+
+        await createUser(DB_FILENAME, userDetails);
+        let status = await createUser(DB_FILENAME, userDetails);
+        expect(status.code).toBe(2);
+    });
+
+    test("createUser (no database)", async () => {
+        let userDetails: UserDetails = {
+            name: "test",
+            email: "test",
+            pass: "test" 
+        };
+
+        let status = await createUser(DB_FILENAME, userDetails);
+        expect(status.code).toBe(1);
+    });
+
+    test("getUserHash", async () => {
+        await createDatabase(DB_FILENAME);
+
+        let userDetails: UserDetails = {
+            name: "test",
+            email: "test",
+            pass: "test" 
+        };
+
+        await createUser(DB_FILENAME, userDetails);
+
+        let hash = await getUserHash(DB_FILENAME, userDetails.email);
+        expect(hash.hash).toBe(userDetails.pass);
+    });
+
+    test("getUserHash (fake user)", async () => {
+        await createDatabase(DB_FILENAME);
+
+        let hash = await getUserHash(DB_FILENAME, "fake");
+        expect(hash.status.code).toBe(6);
+    });
+
+    test("getUserHash (no database)", async () => {
+        let hash = await getUserHash(DB_FILENAME, "fake");
+        expect(hash.status.code).toBe(1);
     });
 });

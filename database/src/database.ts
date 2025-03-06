@@ -5,7 +5,7 @@ import { stat } from "fs/promises";
 
 // god the amount i could do if js had 'using' like in python
 
-type Status = {
+export type Status = {
     error?: string;
     code: 0 // success
         | 1 // Database does not exist
@@ -17,7 +17,7 @@ type Status = {
         | 7 // Could not read from database
 }
 
-const SUCCESS: Status = { code: 0 };
+export const SUCCESS: Status = { code: 0 };
 
 // debugging, remove for release
 verbose();
