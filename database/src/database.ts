@@ -5,9 +5,10 @@ import { stat } from "fs/promises";
 
 // god the amount i could do if js had 'using' like in python
 
-type Status = true | {
-    error: string;
-    code: 1 // Database does not exist
+type Status = {
+    error?: string;
+    code: 0 // success
+        | 1 // Database does not exist
         | 2 // A user with this email already exists
         | 3 // Database already exists
         | 4 // Could not create database
@@ -15,6 +16,8 @@ type Status = true | {
         | 6 // User does not exist
         | 7 // Could not read from database
 }
+
+const SUCCESS: Status = { code: 0 };
 
 // debugging, remove for release
 verbose();
@@ -76,7 +79,7 @@ export async function createUser(fname: string, userDetails: UserDetails): Promi
 
     // return success status and close database
     await db.close();
-    return true;
+    return SUCCESS;
 
 }
 
@@ -122,7 +125,7 @@ export async function createDatabase(fname: string) : Promise<Status>{
 
     // close database and return success status
     await db.close();
-    return true;
+    return SUCCESS;
 }
 
 export async function getUserHash(fname: string, email: String) : Promise<{status: Status, hash?: string}>{
@@ -169,6 +172,6 @@ export async function getUserHash(fname: string, email: String) : Promise<{statu
 
     // close database and return success alongside user hash
     await db.close();
-    return {status: true, hash: result.pass};
+    return {status: SUCCESS, hash: result.pass};
 
 }
