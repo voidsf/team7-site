@@ -21,3 +21,4 @@ test_database:
     script:
         - cd database
         - npm install
+        - npx jest
