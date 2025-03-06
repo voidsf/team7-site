@@ -19,7 +19,7 @@ type Status = true | {
 // debugging, remove for release
 verbose();
 
-async function checkIfFileExists(fname: string) : Promise<Boolean> {
+async function fileExists(fname: string) : Promise<Boolean> {
     try {
         await stat(fname);
         return true;
@@ -32,7 +32,7 @@ async function checkIfFileExists(fname: string) : Promise<Boolean> {
 export async function createUser(fname: string, userDetails: UserDetails): Promise<Status> { 
 
     // check if the database exists
-    if (!await checkIfFileExists(fname)) {
+    if (!await fileExists(fname)) {
         return { error: "Database does not exist", code: 1 };
     }
 
@@ -83,7 +83,7 @@ export async function createUser(fname: string, userDetails: UserDetails): Promi
 export async function createDatabase(fname: string) : Promise<Status>{
 
     // do not create database if it exists
-    if (await checkIfFileExists(fname)) {
+    if (await fileExists(fname)) {
         return { error: "Database already exists", code: 3 };
     }
 
@@ -128,7 +128,7 @@ export async function createDatabase(fname: string) : Promise<Status>{
 export async function getUserHash(fname: string, email: String) : Promise<{status: Status, hash?: string}>{
     
     // check if the database exists
-    if (!await checkIfFileExists(fname)) {
+    if (!await fileExists(fname)) {
         // if database does not exist, return appropriate error status
         return {status:{ error: "Database does not exist", code: 1 }};
     }
