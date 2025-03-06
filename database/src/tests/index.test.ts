@@ -1,4 +1,5 @@
-import { createDatabase, createUser, getUserHash, Status, SUCCESS } from "../database";
+import { createDatabase, createUser, getUserHash, SUCCESS } from "../database";
+
 import { access, unlink } from "fs/promises";
 import { open } from "sqlite";
 import { Database, verbose } from "sqlite3";

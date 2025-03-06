@@ -1,23 +1,11 @@
 import { verbose, Database } from "sqlite3";
 import { open, Database as sqliteDatabase } from "sqlite";
-import { UserDetails } from "./types/types";
+import { UserDetails, DatabaseRequestStatus } from "./types/types";
 import { stat } from "fs/promises";
 
 // god the amount i could do if js had 'using' like in python
 
-export type Status = {
-    error?: string;
-    code: 0 // success
-        | 1 // Database does not exist
-        | 2 // A user with this email already exists
-        | 3 // Database already exists
-        | 4 // Could not create database
-        | 5 // Could not open database
-        | 6 // User does not exist
-        | 7 // Could not read from database
-}
-
-export const SUCCESS: Status = { code: 0 };
+export const SUCCESS: DatabaseRequestStatus = { code: 0 };
 
 // debugging, remove for release
 verbose();
@@ -32,7 +20,7 @@ async function fileExists(fname: string) : Promise<Boolean> {
 }
 
 
-export async function createUser(fname: string, userDetails: UserDetails): Promise<Status> { 
+export async function createUser(fname: string, userDetails: UserDetails): Promise<DatabaseRequestStatus> { 
 
     // check if the database exists
     if (!await fileExists(fname)) {
@@ -83,7 +71,7 @@ export async function createUser(fname: string, userDetails: UserDetails): Promi
 
 }
 
-export async function createDatabase(fname: string) : Promise<Status>{
+export async function createDatabase(fname: string) : Promise<DatabaseRequestStatus>{
 
     // do not create database if it exists
     if (await fileExists(fname)) {
@@ -128,7 +116,7 @@ export async function createDatabase(fname: string) : Promise<Status>{
     return SUCCESS;
 }
 
-export async function getUserHash(fname: string, email: String) : Promise<{status: Status, hash?: string}>{
+export async function getUserHash(fname: string, email: String) : Promise<{status: DatabaseRequestStatus, hash?: string}>{
     
     // check if the database exists
     if (!await fileExists(fname)) {
