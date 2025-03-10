@@ -1,11 +1,15 @@
 {
-  "scripts": {},
+  "scripts": {
+    "build": "tsc -b"
+  },
   "dependencies": {
     "@types/jest": "^29.5.14",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "@babel/types": "^7.26.9",
+    "@types/babel__core": "^7.20.5",
     "@types/node": "^22.13.9",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.6",
