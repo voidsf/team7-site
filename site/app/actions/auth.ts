@@ -6,7 +6,7 @@ import { SignupFormValidation } from "../lib/definitions";
 import { FormState } from "../lib/definitions";
 
 
-export async function signup(state: FormState, formData: FormData) {
+export async function signup(state: FormState, formData: FormData) : Promise<FormState>{
   const validFields = SignupFormValidation.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -28,11 +28,11 @@ export async function signup(state: FormState, formData: FormData) {
 
   switch (status.code) {
     case 0: 
-      return { success: true };
+      return;
     case 2:
-      return { errors: { email: "A user with this email already exists" } };
+      return { errors: { email: ["A user with this email already exists"] } };
     default: 
-      return { errors: { email: "An error occurred" } };
+      return { errors: { email: ["An error occurred"] } };
   };
 
   

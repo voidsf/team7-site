@@ -8,7 +8,7 @@ import { signup } from "../actions/auth";
 import { useActionState } from "react";
 
 export default function SignUp() {
-  const [state, action, pending] = useActionState(signup, undefined)
+  const [state, action, pending] = useActionState(signup, undefined);
 
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
