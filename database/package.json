@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "tsc -b"
+    "build": "tsc --build"
   },
   "dependencies": {
     "@types/jest": "^29.5.14",
