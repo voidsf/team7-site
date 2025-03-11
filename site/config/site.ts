@@ -8,7 +8,7 @@ export const siteConfig = {
       label: "Mission",
       href: "/",
     },
-    { 
+    {
       label: "Login",
       href: "/login",
     },
@@ -16,7 +16,6 @@ export const siteConfig = {
       label: "Sign Up",
       href: "/signup",
     },
-
   ],
   navItemsLoggedIn: [
     {

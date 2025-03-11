@@ -1,11 +1,13 @@
-"use client"
+"use client";
 
-import { title } from "@/components/primitives";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
-import { signup } from "../actions/auth";
 import { useActionState } from "react";
+
+import { signup } from "../actions/auth";
+
+import { title } from "@/components/primitives";
 
 export default function SignUp() {
   const [state, action, pending] = useActionState(signup, undefined);
@@ -15,17 +17,27 @@ export default function SignUp() {
       <div className="text-center">
         <span className={title()}>Sign Up</span>
       </div>
-      <Form action={action} className="w-full max-w-xs flex flex-col items-center justify-center gap-4">
-        <Input id="name" name="name" label="Name" labelPlacement="inside" />
+      <Form
+        action={action}
+        className="w-full max-w-xs flex flex-col items-center justify-center gap-4"
+      >
+        <Input id="name" label="Name" labelPlacement="inside" name="name" />
         {state?.errors?.name && <p>{state.errors.name}</p>}
 
-        <Input name="email" label="Email" labelPlacement="inside" />
+        <Input label="Email" labelPlacement="inside" name="email" />
         {state?.errors?.email && <p>{state.errors.email}</p>}
 
-        <Input name="password" label="Password" labelPlacement="inside" type="password" />
+        <Input
+          label="Password"
+          labelPlacement="inside"
+          name="password"
+          type="password"
+        />
         {state?.errors?.password && <p>{state.errors.password}</p>}
 
-        <Button disabled={pending} type="submit">Sign Up</Button>
+        <Button disabled={pending} type="submit">
+          Sign Up
+        </Button>
       </Form>
     </section>
   );
