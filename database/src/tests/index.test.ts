@@ -1,9 +1,9 @@
 import { createDatabase, createUser, getUserHash, SUCCESS } from "../database";
+import type { UserDetails } from "../database";
 
 import { access, unlink } from "fs/promises";
 import { open } from "sqlite";
 import { Database, verbose } from "sqlite3";
-import { UserDetails } from "../types/types";
 import * as fs from "fs/promises"; 
 
 const DB_FILENAME = "database.db";
