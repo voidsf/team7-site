@@ -12,12 +12,16 @@ import {
 import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 
 import { siteConfig } from "@/config/site";
+import { deleteSession } from "@/app/lib/session";
+import { Form } from "@heroui/form";
+import { Button } from "@heroui/button";
 
 export function Navbar({ sessionStatus }: { sessionStatus: boolean }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [state, action, pending] = useActionState(deleteSession, undefined);
 
   return (
     <HeroUINavbar
@@ -39,7 +43,7 @@ export function Navbar({ sessionStatus }: { sessionStatus: boolean }) {
         {/* wide navbar for large screens */}
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
           {sessionStatus
-            ? siteConfig.navItemsLoggedIn.map((item) => (
+            ? (<>{siteConfig.navItemsLoggedIn.map((item) => (
                 <NavbarItem key={item.href}>
                   <NextLink
                     className={clsx(
@@ -52,7 +56,9 @@ export function Navbar({ sessionStatus }: { sessionStatus: boolean }) {
                     {item.label}
                   </NextLink>
                 </NavbarItem>
-              ))
+              ))}
+              <NavbarItem>
+              <Form action={action}><Button type="submit">Log Out</Button></Form></NavbarItem></>)
             : siteConfig.navItems.map((item) => (
                 <NavbarItem key={item.href}>
                   <NextLink
@@ -73,7 +79,7 @@ export function Navbar({ sessionStatus }: { sessionStatus: boolean }) {
       {/* skinny navbar for snatched screens */}
       <NavbarMenu>
         {sessionStatus
-          ? siteConfig.navItemsLoggedIn.map((item, index) => (
+          ? (<>{siteConfig.navItemsLoggedIn.map((item, index) => (
               <NavbarMenuItem key={`${item}${index}`}>
                 <NextLink
                   className={clsx(
@@ -86,7 +92,12 @@ export function Navbar({ sessionStatus }: { sessionStatus: boolean }) {
                   {item.label}
                 </NextLink>
               </NavbarMenuItem>
-            ))
+            ))}
+            <NavbarMenuItem >
+              <Form action={action}><Button type="submit">Log Out</Button></Form>
+            </NavbarMenuItem>
+            
+            </>)
           : siteConfig.navItems.map((item, index) => (
               <NavbarMenuItem key={`${item}${index}`}>
                 <NextLink

@@ -25,10 +25,6 @@ export const siteConfig = {
     {
       label: "Dashboard",
       href: "/dashboard",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
-    },
+    }
   ],
 };
