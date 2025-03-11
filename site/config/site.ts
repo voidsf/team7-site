@@ -18,4 +18,18 @@ export const siteConfig = {
     },
 
   ],
+  navItemsLoggedIn: [
+    {
+      label: "Mission",
+      href: "/",
+    },
+    {
+      label: "Dashboard",
+      href: "/dashboard",
+    },
+    {
+      label: "Logout",
+      href: "/logout",
+    },
+  ],
 };

@@ -29,13 +29,14 @@ import {
 } from "@/components/icons";
 import { useState } from "react";
 
-export default function Navbar() {
+export function Navbar({sessionStatus}: {sessionStatus: boolean}) {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 
   return (
     <HeroUINavbar onMenuOpenChange={setIsMenuOpen} maxWidth="xl" position="sticky">
+      {sessionStatus}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
@@ -48,7 +49,8 @@ export default function Navbar() {
 
         {/* wide navbar for large screens */}
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
+          {sessionStatus ?
+          (siteConfig.navItemsLoggedIn.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
                 className={clsx(
@@ -61,7 +63,22 @@ export default function Navbar() {
                 {item.label}
               </NextLink>
             </NavbarItem>
-          ))}
+          )))
+          :
+          (siteConfig.navItems.map((item) => (
+            <NavbarItem key={item.href}>
+              <NextLink
+                className={clsx(
+                  linkStyles({ color: "foreground" }),
+                  "data-[active=true]:text-primary data-[active=true]:font-medium",
+                )}
+                color="foreground"
+                href={item.href}
+              >
+                {item.label}
+              </NextLink>
+            </NavbarItem>
+          )))}
         </ul>
 
           
@@ -71,7 +88,7 @@ export default function Navbar() {
 
       {/* skinny navbar for snatched screens */}
       <NavbarMenu>
-        {siteConfig.navItems.map((item, index) => (
+        {sessionStatus ? (siteConfig.navItemsLoggedIn.map((item, index) => (
           <NavbarMenuItem key={`${item}${index}`}>
             <NextLink className={clsx(
                   linkStyles({ color: "foreground" }),
@@ -83,7 +100,20 @@ export default function Navbar() {
                 {item.label}
                 </NextLink>
           </NavbarMenuItem>
-        ))}
+        ))) :
+        (siteConfig.navItems.map((item, index) => (
+          <NavbarMenuItem key={`${item}${index}`}>
+            <NextLink className={clsx(
+                  linkStyles({ color: "foreground" }),
+                  "data-[active=true]:text-primary data-[active=true]:font-medium",
+                )}
+                color="foreground"
+                href={item.href}
+              >
+                {item.label}
+                </NextLink>
+          </NavbarMenuItem>
+        )))}
       </NavbarMenu>
 
     </HeroUINavbar>
