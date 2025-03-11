@@ -29,7 +29,7 @@ import {
 } from "@/components/icons";
 import { useState } from "react";
 
-export const Navbar = () => {
+export default function Navbar() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 

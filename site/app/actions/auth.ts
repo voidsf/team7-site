@@ -1,9 +1,12 @@
 "use server";
 
-import { createUser, DatabaseRequestStatus } from "database";
+import { createUser, getUserHash } from "database";
+import bcrypt from "bcrypt";
 
 import { SignupFormValidation } from "../lib/definitions";
 import { FormState } from "../lib/definitions";
+import { createSession } from "../lib/session";
+import { redirect } from "next/navigation";
 
 
 export async function signup(state: FormState, formData: FormData) : Promise<FormState>{
@@ -19,22 +22,67 @@ export async function signup(state: FormState, formData: FormData) : Promise<For
     };
   }
 
+  const { name, email, password } = validFields.data;
+
+  const hash = await bcrypt.hash(password, 10);
+
   // create user
-  const status: DatabaseRequestStatus = await createUser("database.db", {
-    name: validFields.data.name,
-    email: validFields.data.email,
-    pass: validFields.data.password,
+  const status = await createUser("database.db", {
+    name: name,
+    email: email,
+    pass: hash,
   });
 
   switch (status.code) {
     case 0: 
-      return;
+      await createSession(email);
+      redirect("/dashboard");
     case 2:
       return { errors: { email: ["A user with this email already exists"] } };
     default: 
+      console.log(status.code);
       return { errors: { email: ["An error occurred"] } };
   };
 
-  
+
+}
+
+
+export async function login(state: FormState, formData: FormData) : Promise<FormState>{
+  const email = formData.get("email")?.toString();
+  const pass = formData.get("password")?.toString();
+
+  if (!email || !pass) {
+    return {
+      errors: {
+        email: ["Email is required"],
+        password: ["Password is required"],
+      },
+    };
+  }
+
+  const hash = await bcrypt.hash(pass, 10);
+
+  // check user
+  const hash_status = await getUserHash("database.db", email);
+
+  if (hash_status.status.code != 0) {
+    return { errors: { email: ["User not found"]}}
+  }
+
+  if (hash_status.hash != null) {
+    const match = await bcrypt.compare(pass, hash_status.hash);
+    
+    if (match) {
+      await createSession(email);
+      redirect("/dashboard");
+    } else {
+      return { errors: { password: ["Incorrect password"]}};
+    }
+  } else {
+    return { errors: { email: ["User not found"]}};
+  }
+
+
 
 }
