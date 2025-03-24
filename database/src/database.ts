@@ -181,3 +181,45 @@ export async function getUserHash(fname: string, email: String) : Promise<{statu
     return {status: SUCCESS, hash: result.pass};
 
 }
+
+export async function getUserDetails(fname: string, email: String) : Promise<{status: DatabaseRequestStatus, details?: UserDetails}>{
+    // check if file exists
+    if (!await fileExists(fname)) {
+        return {status:{ error: "Database does not exist", code: 1 }};
+    }
+
+    // declare db variable before opening database
+    let db: sqliteDatabase;
+
+    // try opening database, return error on failure
+    try {
+        db = await open({
+            filename: fname,
+            driver: Database
+        });
+    } catch (error) {
+        return {status:{ error: "Could not open database", code: 5 }};
+    }
+
+    let result;
+    try {
+        result = await db.get(`
+            SELECT name, email, pass FROM users WHERE email = $email`, 
+        {
+            $email: email,
+        });
+
+    } catch (error) {
+        await db.close();
+        return {status:{ error: "Could not read from database", code: 7 }};
+    }
+
+    // if the email is not recognised by the database, i.e. it returns no rows, return an error and close the database
+    if (!result) {
+        await db.close();
+        return {status:{ error: "User does not exist", code : 6 }};
+    }
+
+    await db.close();
+    return {status: SUCCESS, details: result};
+}
