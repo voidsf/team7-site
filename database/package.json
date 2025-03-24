@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build | npm pack"
   },
   "dependencies": {
     "@types/jest": "^29.5.14",

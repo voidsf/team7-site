@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { decrypt } from "@/app/lib/session";
+import { getUserDetails } from "database";
+import { decrypt, SessionJWTPayload } from "@/app/lib/session";
 
 export default async function Dashboard() {
   const cookie = await cookies();
@@ -11,23 +12,25 @@ export default async function Dashboard() {
     redirect("/login");
   }
   const user = await decrypt(session.value);
-
-  if (!user) {
-    // return an error or something about failure to verify
-    cookie.delete("session");
-  }
-  const email = user.email;
-
-  const userDetails = await getUserDetails("database.db", email);
-
-
   
+  if (!user) {
+    cookie.delete("session");
+    redirect("/login");
+  }
+
+  const userDetails = await getUserDetails("database.db", user.email);
+  if (userDetails.status.code != 0 || !userDetails.details) {
+    cookie.delete("session");
+    redirect("/login");
+  }  
+
+  const { name, email } = userDetails.details;
 
   return (
     <>
       <h1>Dashboard</h1>
 
-      <p>Welcome to your dashboard, {JSON.stringify(user)}</p>
+      <p>Welcome to your dashboard, {name}</p>
     </>
   );
 }

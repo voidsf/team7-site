@@ -5,6 +5,13 @@ import { cookies } from "next/headers";
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
 
+export type SessionJWTPayload = {
+  email: string;
+  expires: Date;
+  iat: Number;
+  exp: Number;
+}
+
 export async function createSession(email: string) {
   const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
   const session = await encrypt({ email, expires });
@@ -35,7 +42,7 @@ export async function encrypt(data: any) {
 
 export async function decrypt(session = "") {
   try {
-    const { payload } = await jwtVerify(session, encodedKey, {
+    const { payload }: { payload: SessionJWTPayload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
     });
 
