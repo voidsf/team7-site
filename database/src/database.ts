@@ -1,6 +1,7 @@
 import { verbose, Database } from "sqlite3";
 import { open, Database as sqliteDatabase } from "sqlite";
 import { stat } from "fs/promises";
+import dummydata from "./dummydata";
 
 // god the amount i could do if js had 'using' like in python
 
@@ -20,6 +21,7 @@ export type DatabaseRequestStatus = {
         | 5 // Could not open database
         | 6 // User does not exist
         | 7 // Could not read from database
+        | 8 // A device with this id already exists
 }
 
 
@@ -89,6 +91,71 @@ export async function createUser(fname: string, userDetails: UserDetails): Promi
 
 }
 
+export async function createDevice(fname: string, deviceDetails: any) : Promise<DatabaseRequestStatus>{
+    // check if the database exists
+    if (!await fileExists(fname)) {
+        return { error: "Database does not exist", code: 1 };
+    }
+
+    // define database variable before opening
+    let db: sqliteDatabase;
+
+    // try to open database, if database fails to open return error status
+    try {
+        db = await open({
+            filename: fname,
+            driver: Database
+        });
+    } catch (error) {
+        return { error: "Could not open database", code: 5 };
+    }
+
+    // write data
+    try {
+        await db.run(
+            `INSERT INTO devices (device_id, user_email) VALUES ($device_id, $user_email)`, 
+            {
+                $device_id: deviceDetails.device_id,
+                $user_email: deviceDetails.user_email
+            }
+        );
+
+    } catch (error) {
+        // if duplicate emails, a 'sqlite_constraint' error will be thrown
+        // catch it and return a status code 8, closing the database
+        if (error.code == "SQLITE_CONSTRAINT") {
+            await db.close();
+            return { error: "A device with this id already exists", code: 8 };
+        }
+
+        await db.close();
+        return { error: "Could not write to database", code: 3 };
+    }
+
+    // insert types 
+    for (const type of deviceDetails.types) {
+        try {
+            await db.run(
+                `INSERT INTO counts (device_id, recycling_type, count) VALUES ($device_id, $recycling_type, $count)`,
+                {
+                    $device_id: deviceDetails.device_id,
+                    $recycling_type: type.type_name,
+                    $count: type.count
+                }
+            );
+        } catch (error) {
+            // a duplicate shouldn't happen here, if it does, the initial things are wrong 
+            // since device details shouldn't change at runtime
+            await db.close();
+            return { error: "Could not write to database", code: 3 };
+        }
+    }
+
+    await db.close();
+    return SUCCESS;
+
+}
+
 export async function createDatabase(fname: string) : Promise<DatabaseRequestStatus>{
 
     // do not create database if it exists
@@ -139,6 +206,15 @@ export async function createDatabase(fname: string) : Promise<DatabaseRequestSta
                 PRIMARY KEY (device_id, recycling_type)
             )
         `);
+
+        // fill with fake data
+        for (const user of dummydata.users) {
+            await createUser(fname, user);
+        }
+
+        for (const device of dummydata.devices) {
+            await createDevice(fname, device);
+        }
     } catch (error) {
         /* if table could not be created, close database and return error code 4 
          * this will be thrown due to a duplicate table if the database already exists
