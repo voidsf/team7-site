@@ -3,8 +3,9 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { getUserDetails } from "database";
+import { getUserDetails, getAllUserDevices } from "database";
 import { decrypt, SessionJWTPayload } from "@/app/lib/session";
+import DeviceDetails from "@/components/devicedetails";
 
 export default async function Dashboard() {
   const cookie = await cookies();
@@ -27,13 +28,16 @@ export default async function Dashboard() {
     redirect("/login");
   }  
 
-  const { name, email } = userDetails.details;
+  const { name } = userDetails.details;
+
+
 
   return (
     <>
       <h1>Dashboard</h1>
 
       <p>Welcome to your dashboard, {name}</p>
+      <DeviceDetails email={user.email}/>
       {/*<p>Contents of session: {JSON.stringify(user)}</p>*/}
     </>
   );

@@ -16,6 +16,7 @@
   "@heroui/link": "2.2.11",
   "@heroui/listbox": "2.3.13",
   "@heroui/navbar": "2.2.12",
+  "@heroui/select": "^2.4.16",
   "@heroui/snippet": "2.2.14",
   "@heroui/switch": "2.2.12",
   "@heroui/system": "2.4.10",
@@ -26,6 +27,7 @@
   "@types/mysql": "^2.15.26",
   "bcrypt": "^5.1.1",
   "clsx": "2.1.1",
+  "d3": "^7.9.0",
   "database": "file:database-1.0.0.tgz",
   "framer-motion": "11.13.1",
   "intl-messageformat": "^10.5.0",
@@ -40,6 +42,7 @@
  "devDependencies": {
   "@next/eslint-plugin-next": "15.0.4",
   "@react-types/shared": "3.25.0",
+  "@types/d3": "^7.4.3",
   "@types/node": "20.5.7",
   "@types/react": "18.3.3",
   "@types/react-dom": "18.3.0",
