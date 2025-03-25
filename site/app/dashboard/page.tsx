@@ -1,3 +1,5 @@
+"use server"
+
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -13,12 +15,13 @@ export default async function Dashboard() {
   }
   const user = await decrypt(session.value);
   
-  if (!user) {
+  if (!user || user.expires < new Date()) {
     cookie.delete("session");
     redirect("/login");
   }
 
   const userDetails = await getUserDetails("database.db", user.email);
+
   if (userDetails.status.code != 0 || !userDetails.details) {
     cookie.delete("session");
     redirect("/login");
@@ -31,6 +34,7 @@ export default async function Dashboard() {
       <h1>Dashboard</h1>
 
       <p>Welcome to your dashboard, {name}</p>
+      {/*<p>Contents of session: {JSON.stringify(user)}</p>*/}
     </>
   );
 }
