@@ -109,15 +109,34 @@ export async function createDatabase(fname: string) : Promise<DatabaseRequestSta
         return { error: "Could not open database", code: 5 };
     }
 
-    // try to create users table
     try {
+        // create user table
         await db.run(`
             CREATE TABLE users
             ( 
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
-                email TEXT UNIQUE NOT NULL,
                 pass TEXT NOT NULL 
+            )
+        `);
+        
+        // create device table
+        await db.run(`
+            CREATE TABLE devices
+            (
+                device_id TEXT PRIMARY KEY,
+                user_email TEXT NOT NULL          
+            )
+        `);
+
+        // create device stats table
+        await db.run(`
+            CREATE TABLE counts
+            (
+                device_id TEXT,
+                recycling_type TEXT,
+                count INTEGER,
+                PRIMARY KEY (device_id, recycling_type)
             )
         `);
     } catch (error) {
