@@ -11,6 +11,12 @@ export type UserDetails = {
     pass: string
 }
 
+export type DeviceDetails = {
+    device_id: string,
+    user_email: string,
+    types: Array<{type_name: string, count: number}>
+}
+
 export type DatabaseRequestStatus = {
     error?: string;
     code: 0 // success
@@ -22,7 +28,9 @@ export type DatabaseRequestStatus = {
         | 6 // User does not exist
         | 7 // Could not read from database
         | 8 // A device with this id already exists
+        | 9 // User has no associated devices
 }
+
 
 
 export const SUCCESS: DatabaseRequestStatus = { code: 0 };
@@ -91,7 +99,7 @@ export async function createUser(fname: string, userDetails: UserDetails): Promi
 
 }
 
-export async function createDevice(fname: string, deviceDetails: any) : Promise<DatabaseRequestStatus>{
+export async function createDevice(fname: string, deviceDetails: DeviceDetails) : Promise<DatabaseRequestStatus>{
     // check if the database exists
     if (!await fileExists(fname)) {
         return { error: "Database does not exist", code: 1 };
@@ -154,6 +162,73 @@ export async function createDevice(fname: string, deviceDetails: any) : Promise<
     await db.close();
     return SUCCESS;
 
+}
+
+export async function getAllUserDevices(fname: string, email: string) : Promise<{status: DatabaseRequestStatus, devices?: Array<DeviceDetails>}> {
+    if (!await fileExists(fname)) {
+        return {status:{ error: "Database does not exist", code: 1 }};
+    }
+
+    let db: sqliteDatabase;
+
+    try {
+        db = await open({
+            filename: fname,
+            driver: Database
+        });
+    } catch (error) {
+        return {status:{ error: "Could not open database", code: 5 }};
+    }
+
+    let result;
+    try {
+        result = await db.all(`
+            SELECT device_id FROM devices WHERE user_email = $email`,
+            {$email: email}
+        );
+    } catch (error) {
+        await db.close();
+        return {status:{ error: "Could not read from database", code: 7 }};
+    }
+
+    if (!result) {
+        // user has no devices
+        await db.close();
+        return {status: SUCCESS, devices: []};
+    }
+
+    let devices: Array<DeviceDetails> = [];
+    for (const device of result) {
+
+
+        try {
+            result = await db.all(` 
+                SELECT recycling_type, count FROM counts WHERE device_id = $device_id`,
+                {$device_id: device.device_id}
+            );
+        } catch (error) {
+            await db.close();
+            return {status:{ error: "Could not read from database", code: 7 }};
+        }
+
+        let recycling_types = [];
+
+        for (const recycling_type of result) {
+            recycling_types.push({
+                type_name: recycling_type.recycling_type,
+                count: recycling_type.count
+            });
+        }
+
+        devices.push({
+            device_id: device.device_id,
+            user_email: email,
+            types: recycling_types
+        });
+    }
+
+    await db.close();
+    return {status: SUCCESS, devices: devices};
 }
 
 export async function createDatabase(fname: string) : Promise<DatabaseRequestStatus>{
