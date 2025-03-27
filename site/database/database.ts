@@ -1,9 +1,6 @@
-import { stat } from "fs/promises";
+import postgres from "postgres";
 
-import { verbose, Database } from "sqlite3";
-import { open, Database as sqliteDatabase } from "sqlite";
-
-import dummydata from "./dummydata";
+const sql = postgres(process.env.DATABASE_URL || "", { ssl: "verify-full" });
 
 // god the amount i could do if js had 'using' like in python
 
@@ -36,69 +33,35 @@ export type DatabaseRequestStatus = {
 
 export const SUCCESS: DatabaseRequestStatus = { code: 0 };
 
-// debugging, remove for release
-verbose();
-
-async function fileExists(fname: string): Promise<Boolean> {
-  try {
-    await stat(fname);
-
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
-
 export async function createUser(
   fname: string,
   userDetails: UserDetails,
 ): Promise<DatabaseRequestStatus> {
-  // check if the database exists
-  if (!(await fileExists(fname))) {
-    return { error: "Database does not exist", code: 1 };
-  }
-
-  // define database variable before opening
-  let db: sqliteDatabase;
-
-  // try to open database, if database fails to open return error status
-  try {
-    db = await open({
-      filename: fname,
-      driver: Database,
-    });
-  } catch (error) {
-    return { error: "Could not open database", code: 5 };
-  }
-
   // try to write to database, if writing fails return error status and close database
 
-  try {
-    await db.run(
-      `INSERT INTO users (name, email, pass) VALUES ($name, $email, $pass)`,
-      {
-        $name: userDetails.name,
-        $email: userDetails.email,
-        $pass: userDetails.pass,
-      },
-    );
-  } catch (error: any) {
-    // if duplicate emails, a 'sqlite_constraint' error will be thrown
-    // catch it and return a status code 2, closing the database
-    if (error.code == "SQLITE_CONSTRAINT") {
-      await db.close();
+  let result;
 
+  try {
+    result = await sql`
+      INSERT INTO users 
+      (name, email, pass) 
+      VALUES 
+      (${userDetails.name}, 
+      ${userDetails.email}, 
+      ${userDetails.pass})
+    `;
+  } catch (error) {
+    if (error instanceof postgres.PostgresError) {
+      // duplicate key value
       return { error: "A user with this email already exists", code: 2 };
     }
-
-    // if unknown error, close database and return code 3
-    await db.close();
 
     return { error: "Could not write to database", code: 3 };
   }
 
-  // return success status and close database
-  await db.close();
+  if (result === undefined) {
+    return { error: "Could not write to database", code: 3 };
+  }
 
   return SUCCESS;
 }
@@ -107,68 +70,27 @@ export async function createDevice(
   fname: string,
   deviceDetails: DeviceDetails,
 ): Promise<DatabaseRequestStatus> {
-  // check if the database exists
-  if (!(await fileExists(fname))) {
-    return { error: "Database does not exist", code: 1 };
-  }
-
-  // define database variable before opening
-  let db: sqliteDatabase;
+  let result;
 
   // try to open database, if database fails to open return error status
   try {
-    db = await open({
-      filename: fname,
-      driver: Database,
-    });
+    result = await sql`
+      INSERT INTO devices
+      (device_id, user_email)
+      VALUES
+      (${deviceDetails.device_id},
+      ${deviceDetails.user_email})
+    `;
   } catch (error) {
-    return { error: "Could not open database", code: 5 };
-  }
-
-  // write data
-  try {
-    await db.run(
-      `INSERT INTO devices (device_id, user_email) VALUES ($device_id, $user_email)`,
-      {
-        $device_id: deviceDetails.device_id,
-        $user_email: deviceDetails.user_email,
-      },
-    );
-  } catch (error:any) {
-    // if duplicate emails, a 'sqlite_constraint' error will be thrown
-    // catch it and return a status code 8, closing the database
-    if (error.code == "SQLITE_CONSTRAINT") {
-      await db.close();
-
+    if (error instanceof postgres.PostgresError) {
+      // duplicate key value
       return { error: "A device with this id already exists", code: 8 };
     }
+  }
 
-    await db.close();
-
+  if (result === undefined) {
     return { error: "Could not write to database", code: 3 };
   }
-
-  // insert types
-  for (const type of deviceDetails.types) {
-    try {
-      await db.run(
-        `INSERT INTO counts (device_id, recycling_type, count) VALUES ($device_id, $recycling_type, $count)`,
-        {
-          $device_id: deviceDetails.device_id,
-          $recycling_type: type.type_name,
-          $count: type.count,
-        },
-      );
-    } catch (error) {
-      // a duplicate shouldn't happen here, if it does, the initial things are wrong
-      // since device details shouldn't change at runtime
-      await db.close();
-
-      return { error: "Could not write to database", code: 3 };
-    }
-  }
-
-  await db.close();
 
   return SUCCESS;
 }
@@ -177,255 +99,107 @@ export async function getAllUserDevices(
   fname: string,
   email: string,
 ): Promise<{ status: DatabaseRequestStatus; devices?: Array<DeviceDetails> }> {
-  if (!(await fileExists(fname))) {
-    return { status: { error: "Database does not exist", code: 1 } };
-  }
-
-  let db: sqliteDatabase;
-
-  try {
-    db = await open({
-      filename: fname,
-      driver: Database,
-    });
-  } catch (error) {
-    return { status: { error: "Could not open database", code: 5 } };
-  }
-
+  console.log(`getting devices associated with ${email}`);
   let result;
 
   try {
-    result = await db.all(
-      `
-            SELECT device_id FROM devices WHERE user_email = $email`,
-      { $email: email },
-    );
+    result = await sql`
+      SELECT device_id FROM devices WHERE user_email = ${email}
+    `;
   } catch (error) {
-    await db.close();
-
     return { status: { error: "Could not read from database", code: 7 } };
   }
 
   if (!result) {
-    // user has no devices
-    await db.close();
-
-    return { status: SUCCESS, devices: [] };
+    return { status: { error: "User has no associated devices", code: 9 } };
   }
 
-  let devices: Array<DeviceDetails> = [];
+  const devices: Array<DeviceDetails> = [];
 
-  for (const device of result) {
+  for (let i = 0; i < result.length; i++) {
+    const deviceDetails: DeviceDetails = {
+      device_id: result[i].device_id,
+      user_email: email,
+      types: [],
+    };
+
+    devices.push(deviceDetails);
+  }
+
+  console.log("getting further device details");
+
+  for (let device of devices) {
     try {
-      result = await db.all(
-        ` 
-                SELECT recycling_type, count FROM counts WHERE device_id = $device_id`,
-        { $device_id: device.device_id },
-      );
+      result = await sql`
+        SELECT type, count FROM recycling_types WHERE device_id = ${device.device_id}
+      `;
     } catch (error) {
-      await db.close();
+      console.log(`failed on device ${device.device_id}
+        ${JSON.stringify(error)}`);
 
       return { status: { error: "Could not read from database", code: 7 } };
     }
 
-    let recycling_types = [];
-
-    for (const recycling_type of result) {
-      recycling_types.push({
-        type_name: recycling_type.recycling_type,
-        count: recycling_type.count,
+    for (let i = 0; i < result.length; i++) {
+      device.types.push({
+        type_name: result[i].type,
+        count: result[i].count,
       });
     }
-
-    devices.push({
-      device_id: device.device_id,
-      user_email: email,
-      types: recycling_types,
-    });
   }
 
-  await db.close();
+  console.log(JSON.stringify(devices));
 
   return { status: SUCCESS, devices: devices };
 }
 
-export async function createDatabase(
-  fname: string,
-): Promise<DatabaseRequestStatus> {
-  // do not create database if it exists
-  if (await fileExists(fname)) {
-    return { error: "Database already exists", code: 3 };
-  }
-
-  // instantiate db variable before opening database
-  let db: sqliteDatabase;
-
-  // try opening database, if failed, return error status 5
-  try {
-    db = await open({
-      filename: fname,
-      driver: Database,
-    });
-  } catch (error) {
-    return { error: "Could not open database", code: 5 };
-  }
-
-  try {
-    // create user table
-    await db.run(`
-            CREATE TABLE users
-            ( 
-                email TEXT PRIMARY KEY,
-                name TEXT NOT NULL,
-                pass TEXT NOT NULL 
-            )
-        `);
-
-    // create device table
-    await db.run(`
-            CREATE TABLE devices
-            (
-                device_id TEXT PRIMARY KEY,
-                user_email TEXT NOT NULL          
-            )
-        `);
-
-    // create device stats table
-    await db.run(`
-            CREATE TABLE counts
-            (
-                device_id TEXT,
-                recycling_type TEXT,
-                count INTEGER,
-                PRIMARY KEY (device_id, recycling_type)
-            )
-        `);
-
-    // fill with fake data
-    for (const user of dummydata.users) {
-      await createUser(fname, user);
-    }
-
-    for (const device of dummydata.devices) {
-      await createDevice(fname, device);
-    }
-  } catch (error) {
-    /* if table could not be created, close database and return error code 4
-     * this will be thrown due to a duplicate table if the database already exists
-     * however this is checked so shouldn't happen
-     */
-    await db.close();
-
-    return { error: "Could not create database", code: 4 };
-  }
-
-  // close database and return success status
-  await db.close();
-
-  return SUCCESS;
-}
-
 export async function getUserHash(
   fname: string,
-  email: String,
+  email: string,
 ): Promise<{ status: DatabaseRequestStatus; hash?: string }> {
   // check if the database exists
-  if (!(await fileExists(fname))) {
-    // if database does not exist, return appropriate error status
-    return { status: { error: "Database does not exist", code: 1 } };
-  }
-
-  // declare db variable before opening database
-  let db: sqliteDatabase;
-
-  // try opening database, return error on failure
-  try {
-    db = await open({
-      filename: fname,
-      driver: Database,
-    });
-  } catch (error) {
-    return { status: { error: "Could not open database", code: 5 } };
-  }
-
-  // try to get the hash from the database
-
   let result;
 
   try {
-    result = await db.get(
-      `
-            SELECT pass FROM users WHERE email = $email`,
-      {
-        $email: email,
-      },
-    );
+    result = await sql`
+      SELECT pass FROM users WHERE email = ${email}
+    `;
   } catch (error) {
-    // if the email does not exist, return an error and close the database
-    await db.close();
-
     return { status: { error: "Could not read from database", code: 7 } };
   }
 
-  // if the email is not recognised by the database, i.e. it returns no rows, return an error and close the database
+  // if the email is not recognised by the database, i.e. it returns no rows, return an error
   if (!result) {
-    await db.close();
-
     return { status: { error: "User does not exist", code: 6 } };
   }
 
-  // close database and return success alongside user hash
-  await db.close();
-
-  return { status: SUCCESS, hash: result.pass };
+  return { status: SUCCESS, hash: result[0].pass };
 }
 
 export async function getUserDetails(
   fname: string,
-  email: String,
+  email: string,
 ): Promise<{ status: DatabaseRequestStatus; details?: UserDetails }> {
   // check if file exists
-  if (!(await fileExists(fname))) {
-    return { status: { error: "Database does not exist", code: 1 } };
-  }
-
-  // declare db variable before opening database
-  let db: sqliteDatabase;
-
-  // try opening database, return error on failure
-  try {
-    db = await open({
-      filename: fname,
-      driver: Database,
-    });
-  } catch (error) {
-    return { status: { error: "Could not open database", code: 5 } };
-  }
-
   let result;
 
   try {
-    result = await db.get(
-      `
-            SELECT name, email, pass FROM users WHERE email = $email`,
-      {
-        $email: email,
-      },
-    );
+    result = await sql`
+      SELECT name, email FROM users WHERE email = ${email}
+    `;
   } catch (error) {
-    await db.close();
-
     return { status: { error: "Could not read from database", code: 7 } };
   }
 
-  // if the email is not recognised by the database, i.e. it returns no rows, return an error and close the database
   if (!result) {
-    await db.close();
-
     return { status: { error: "User does not exist", code: 6 } };
   }
 
-  await db.close();
+  const userDetails: UserDetails = {
+    name: result[0].name,
+    email: result[0].email,
+    pass: "",
+  };
 
-  return { status: SUCCESS, details: result };
+  return { status: SUCCESS, details: userDetails };
 }
