@@ -203,3 +203,22 @@ export async function getUserDetails(
 
   return { status: SUCCESS, details: userDetails };
 }
+
+export async function getLeaderboardData() {
+  let result;
+
+  try { 
+    result = await sql`
+      SELECT users.name, devices.device_id, 
+      SUM(recycling_types.count) FILTER (where recycling_types.type <> 'Non-Recyclable') * 100 / sum(recycling_types.count) AS score
+      FROM users 
+      INNER JOIN devices ON users.email=devices.user_email 
+      INNER JOIN recycling_types ON devices.device_id=recycling_types.device_id
+      GROUP BY users.name, devices.device_id  
+    `
+  } catch (error) {
+    return { status: { error: "Could not read from database", code: 7 } };
+  }
+
+  return { status: SUCCESS, result: result};
+}

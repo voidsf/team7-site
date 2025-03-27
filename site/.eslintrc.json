@@ -37,6 +37,7 @@
     "prettier/prettier": "warn",
     "no-unused-vars": "off",
     "linebreak-style": "off",
+    "endOfLine": "auto",
     "unused-imports/no-unused-vars": "off",
     "unused-imports/no-unused-imports": "warn",
     "@typescript-eslint/no-unused-vars": [
