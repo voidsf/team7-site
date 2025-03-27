@@ -134,7 +134,7 @@ export async function createDevice(
         $user_email: deviceDetails.user_email,
       },
     );
-  } catch (error) {
+  } catch (error:any) {
     // if duplicate emails, a 'sqlite_constraint' error will be thrown
     // catch it and return a status code 8, closing the database
     if (error.code == "SQLITE_CONSTRAINT") {
