@@ -82,7 +82,7 @@ export async function createUser(
         $pass: userDetails.pass,
       },
     );
-  } catch (error) {
+  } catch (error: any) {
     // if duplicate emails, a 'sqlite_constraint' error will be thrown
     // catch it and return a status code 2, closing the database
     if (error.code == "SQLITE_CONSTRAINT") {
