@@ -36,6 +36,7 @@
     "jsx-a11y/interactive-supports-focus": "warn",
     "prettier/prettier": "warn",
     "no-unused-vars": "off",
+    "linebreak-style": "off",
     "unused-imports/no-unused-vars": "off",
     "unused-imports/no-unused-imports": "warn",
     "@typescript-eslint/no-unused-vars": [
