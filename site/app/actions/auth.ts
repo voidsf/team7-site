@@ -1,6 +1,6 @@
 "use server";
 
-import { createUser, getUserHash } from "database";
+import { createUser, getUserHash } from "@/database/database";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 

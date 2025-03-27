@@ -1,5 +1,5 @@
 "use server";
-import { getAllUserDevices } from "database";
+import { getAllUserDevices } from "../database/database";
 import DetailDisplay from "./detaildisplay";
 
 export default async function DeviceDetails({email}: {email:string}) {

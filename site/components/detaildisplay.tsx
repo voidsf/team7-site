@@ -1,7 +1,7 @@
 "use client";
 
 import { Select, SelectItem } from "@heroui/select";
-import { DeviceDetails } from "database";
+import { DeviceDetails } from "@/database/database";
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 

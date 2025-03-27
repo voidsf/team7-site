@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { getUserDetails, getAllUserDevices } from "database";
+import { getUserDetails, getAllUserDevices } from "@/database/database";
 import { decrypt, SessionJWTPayload } from "@/app/lib/session";
 import DeviceDetails from "@/components/devicedetails";
 
