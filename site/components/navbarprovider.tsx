@@ -10,7 +10,6 @@ export async function NavbarProvider() {
 
   return (
     <>
-      <h1>{session?.value}</h1>
       <Navbar sessionStatus={!!session} />
     </>
   );
