@@ -28,7 +28,8 @@ export type DatabaseRequestStatus = {
     | 6 // User does not exist
     | 7 // Could not read from database
     | 8 // A device with this id already exists
-    | 9; // User has no associated devices
+    | 9 // User has no associated devices
+    | 10
 };
 
 export const SUCCESS: DatabaseRequestStatus = { code: 0 };
@@ -221,4 +222,37 @@ export async function getLeaderboardData() {
   }
 
   return { status: SUCCESS, result: result};
+}
+
+export async function incrementDeviceScore(
+  device_id: string, 
+  type: string
+) {
+  // is this a real device?
+  let result;
+
+  try {
+    let result = await sql`
+      SELECT device_id FROM devices WHERE device_id = ${device_id}`
+  } catch (error) {
+    return { error: "Could not read from database", code: 7 };
+  }
+
+  if (!result) {
+    return { error: "Device does not exist", code: 10 };
+  }
+  
+  let result2;
+
+  try {
+    let result2 = await sql`
+      UPDATE recycling_types
+      SET count = count + 1 
+      WHERE device_id = ${device_id} AND type = ${type}
+    `
+  } catch (error) {
+    return { error: "Could not write to database", code: 4 };
+  }
+
+  return SUCCESS;
 }
