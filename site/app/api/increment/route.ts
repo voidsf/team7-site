@@ -28,7 +28,15 @@ export async function POST(request: Request) {
     // get device info 
     const result = await incrementDeviceScore(req.device_id, req.type);
 
-    if (result.error) {
+    if (result.code != 0) {
+        console.log(`error ${result.code}: ${result.error} `)
+        console.log(req);
+
+        switch (result.code) {
+            case (10) : return new Response(result.error, { status: 400})
+            default: return new Response("Server error", { status: 500 });
+        }
+
         return new Response(null, { status: 500 });
     }
 

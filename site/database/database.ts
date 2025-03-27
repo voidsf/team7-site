@@ -232,11 +232,14 @@ export async function incrementDeviceScore(
   let result;
 
   try {
-    let result = await sql`
-      SELECT device_id FROM devices WHERE device_id = ${device_id}`
+    result = await sql`
+      select * from devices where device_id = ${device_id}
+      `
   } catch (error) {
     return { error: "Could not read from database", code: 7 };
   }
+
+  console.log(result);
 
   if (!result) {
     return { error: "Device does not exist", code: 10 };
@@ -245,7 +248,7 @@ export async function incrementDeviceScore(
   let result2;
 
   try {
-    let result2 = await sql`
+    result2 = await sql`
       UPDATE recycling_types
       SET count = count + 1 
       WHERE device_id = ${device_id} AND type = ${type}
