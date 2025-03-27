@@ -1,43 +1,57 @@
 "use client";
 
 import { Select, SelectItem } from "@heroui/select";
-import { DeviceDetails } from "@/database/database";
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+
+import { DeviceDetails } from "@/database/database";
 
 export default function DetailDisplay({ details }: { details: any }) {
   const ref = useRef<HTMLElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [selected, setSelected] = useState(details[0]);
 
   useEffect(() => {
-    if (ref.current) {
-      setDimensions({
-        width: ref.current.offsetWidth,
-        height: ref.current.offsetHeight,
-      });
-    }
+    if (selected) {
+      console.log(`Running effect with device: ${selected.device_id}`);
+      if (ref.current) {
+        setDimensions({
+          width: ref.current.offsetWidth,
+          height: ref.current.offsetHeight,
+        });
+      }
 
-    getChart("#my-svg", details[0]);
-  }, []);
+      getChart("#active-chart", selected);
+    }
+  }, [selected]);
 
   return (
-    <section ref={ref} className="sm:block md:hidden">
+    <section ref={ref} className="sm:block">
       {dimensions.width} {dimensions.height}
       <Select
+        defaultSelectedKeys={[details[0].device_id]}
         label="Sorter"
         placeholder="Select a sorter"
         selectionMode="single"
+        onChange={(e) => {
+          let val = e.target.value;
+          let device = details.find((device: any) => device.device_id === val);
+          
+          setSelected(device);
+        }}
       >
         {details.map((device: any) => (
           <SelectItem key={device.device_id}>{device.device_id}</SelectItem>
         ))}
       </Select>
-      <svg id="my-svg" />
+      <svg id="active-chart" />
     </section>
   );
 }
 
 function getChart(id: string, device: DeviceDetails) {
+  d3.select(id).selectAll("*").remove();
+
   const width = 600;
   const height = 400;
   const margin = { top: 20, right: 20, bottom: 20, left: 20 };
@@ -78,7 +92,7 @@ function getChart(id: string, device: DeviceDetails) {
   svg
     .append("g")
     .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).tickFormat((y) => (y.toString())))
+    .call(d3.axisLeft(y).tickFormat((y) => y.toString()))
     .call((g) => g.select(".domain").remove())
     .call((g) =>
       g
