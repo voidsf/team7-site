@@ -91,5 +91,10 @@
         "next": ["const", "let", "var"]
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["site/cypress/**.*.ts"]
+    }
+  ]
 }
