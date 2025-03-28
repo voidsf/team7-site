@@ -31,7 +31,7 @@ export default function Login() {
           name="password"
           type="password"
         />
-        <Button disabled={pending} type="submit">
+        <Button id="loginsubmit" disabled={pending} type="submit">
           Log In
         </Button>
         {state?.errors?.password && <p>{state.errors.password}</p>}
