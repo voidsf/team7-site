@@ -37,7 +37,7 @@
     "prettier/prettier": "warn",
     "no-unused-vars": "off",
     "linebreak-style": "off",
-    "endOfLine": "auto",
+    "endOfLine": "off",
     "unused-imports/no-unused-vars": "off",
     "unused-imports/no-unused-imports": "warn",
     "@typescript-eslint/no-unused-vars": [
@@ -94,7 +94,12 @@
   },
   "overrides": [
     {
-      "files": ["site/cypress/**/*.ts"]
+      "files": ["cypress/**/*.ts", "cypress.config.ts"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-unused-vars": "off"
+      }
     }
   ]
 }
