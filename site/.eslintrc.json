@@ -94,7 +94,7 @@
   },
   "overrides": [
     {
-      "files": ["site/cypress/**.*.ts"]
+      "files": ["site/cypress/**/*.ts"]
     }
   ]
 }
