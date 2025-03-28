@@ -36,8 +36,10 @@ export async function POST(request: any) {
         console.log('File created');
     });
 
-    const workspace = await roboflow.getWorkspace(api_url + workspace_url, api_key);
-    console.log(JSON.stringify(workspace));
+    // const workspace = await roboflow.getWorkspace(api_url + workspace_url, api_key);
+    // console.log(JSON.stringify(workspace));
+
+    
 
     return new Response(JSON.stringify({ message: "OK" }), { status: 200 });
 }
