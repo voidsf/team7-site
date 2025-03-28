@@ -1,17 +1,17 @@
 [
     {
-        "id": "4add3e49d0d109e2",
+        "id": "c83e93637860fa4a",
         "type": "tab",
-        "label": "Flow 5",
+        "label": "Flow 2",
         "disabled": false,
         "info": "",
         "env": []
     },
     {
-        "id": "014363ba8ac112be",
+        "id": "8f757360a71b9341",
         "type": "debug",
-        "z": "4add3e49d0d109e2",
-        "name": "debug 6",
+        "z": "c83e93637860fa4a",
+        "name": "debug 10",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -19,14 +19,14 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 780,
-        "y": 180,
+        "x": 880,
+        "y": 160,
         "wires": []
     },
     {
-        "id": "76fd4ff4c446c695",
+        "id": "36c91a4e8f050592",
         "type": "exec",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "command": "python3 /home/pi/cm2305/physical/random_decision.py",
         "addpay": "",
         "append": "",
@@ -35,20 +35,20 @@
         "winHide": false,
         "oldrc": false,
         "name": "RandomDecision",
-        "x": 510,
-        "y": 500,
+        "x": 610,
+        "y": 480,
         "wires": [
             [
-                "e1bd7cd90df9116b"
+                "29965240e8292deb"
             ],
             [],
             []
         ]
     },
     {
-        "id": "e1bd7cd90df9116b",
+        "id": "29965240e8292deb",
         "type": "function",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "CleanBoolean",
         "func": "// Remove any leading and trailing whitespace from the payload string.\nmsg.payload = msg.payload.trim();\n\n// Pass the modified message to the next node.\nreturn msg;\n",
         "outputs": 1,
@@ -57,19 +57,19 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 800,
-        "y": 240,
+        "x": 900,
+        "y": 220,
         "wires": [
             [
-                "bd38cf359628bab9",
-                "014363ba8ac112be"
+                "4c514aecbdcbb83c",
+                "8f757360a71b9341"
             ]
         ]
     },
     {
-        "id": "bd38cf359628bab9",
+        "id": "4c514aecbdcbb83c",
         "type": "switch",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "IsRecyclableSwitch",
         "property": "payload",
         "propertyType": "msg",
@@ -88,23 +88,23 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 810,
-        "y": 300,
+        "x": 910,
+        "y": 280,
         "wires": [
             [
-                "3276e2b29925a90f",
-                "5e9ad0ea5202ad37"
+                "84d3b9eb41c2d089",
+                "1acb2140bbe6e74f"
             ],
             [
-                "c079c8f3f7612d23",
-                "c34d07fd8680c6be"
+                "5e946fc69c48870c",
+                "5c696df72d61e923"
             ]
         ]
     },
     {
-        "id": "3276e2b29925a90f",
+        "id": "84d3b9eb41c2d089",
         "type": "exec",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "command": "python /home/pi/cm2305/physical/lcd_display.py",
         "addpay": "",
         "append": "0 255 0 'Recyclable'",
@@ -113,8 +113,8 @@
         "winHide": false,
         "oldrc": false,
         "name": "LCDIsRecyclable",
-        "x": 1090,
-        "y": 260,
+        "x": 1190,
+        "y": 240,
         "wires": [
             [],
             [],
@@ -122,9 +122,9 @@
         ]
     },
     {
-        "id": "c34d07fd8680c6be",
+        "id": "5e946fc69c48870c",
         "type": "exec",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "command": "python /home/pi/cm2305/physical/lcd_display.py",
         "addpay": "",
         "append": "255 0 0 'Not Recyclable'",
@@ -133,8 +133,8 @@
         "winHide": false,
         "oldrc": false,
         "name": "LCDIsNotRecyclable",
-        "x": 1080,
-        "y": 340,
+        "x": 1180,
+        "y": 320,
         "wires": [
             [],
             [],
@@ -142,35 +142,10 @@
         ]
     },
     {
-        "id": "c079c8f3f7612d23",
-        "type": "delay",
-        "z": "4add3e49d0d109e2",
-        "name": "MotorControl(NotImplemented)",
-        "pauseType": "delay",
-        "timeout": "2",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "3",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 1110,
-        "y": 400,
-        "wires": [
-            [
-                "94eb0c588efc8843"
-            ]
-        ]
-    },
-    {
-        "id": "5dd9c0eeb26e3d42",
+        "id": "b113e7a925fefb91",
         "type": "debug",
-        "z": "4add3e49d0d109e2",
-        "name": "debug 7",
+        "z": "c83e93637860fa4a",
+        "name": "debug 11",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -178,14 +153,14 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 140,
-        "y": 100,
+        "x": 360,
+        "y": 40,
         "wires": []
     },
     {
-        "id": "767407d213d1caf4",
+        "id": "ada0465b8bd41d33",
         "type": "function",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "Lock",
         "func": "// Get the current value of 'systemLocked' from the flow context.\n// If it's not set yet, default to 'false'.\nlet systemLocked = flow.get('systemLocked') || false;\n\n// If the system is already locked, stop here and do not pass the message forward.\nif (systemLocked) {\n    return null; // Prevent further processing\n}\n\n// Set 'systemLocked' to true in the flow context to prevent re-entry.\nflow.set('systemLocked', true);\n\n// Continue passing the message to the next node.\nreturn msg;\n",
         "outputs": 1,
@@ -194,19 +169,19 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 330,
-        "y": 160,
+        "x": 430,
+        "y": 140,
         "wires": [
             [
-                "0425a59bffc02284",
-                "2129fc0d9fad32f2"
+                "d0b2d22bd84aa921",
+                "5038f23fe04526c3"
             ]
         ]
     },
     {
-        "id": "10f4b073747238f4",
+        "id": "e32c483951e2e6c7",
         "type": "function",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "Unlock",
         "func": "// Unlock the system by setting 'systemLocked' back to false in the flow context.\nflow.set('systemLocked', false);\n\n// Continue passing the message to the next node (optional, if needed).\nreturn msg;\n",
         "outputs": 1,
@@ -215,20 +190,20 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1390,
-        "y": 260,
+        "x": 1490,
+        "y": 240,
         "wires": [
             [
-                "530df821eb58717b",
-                "8f641df494dc49d1"
+                "a4af36dafe7fe4f8",
+                "7f067db9f56fc38e"
             ]
         ]
     },
     {
-        "id": "530df821eb58717b",
+        "id": "a4af36dafe7fe4f8",
         "type": "debug",
-        "z": "4add3e49d0d109e2",
-        "name": "debug 8",
+        "z": "c83e93637860fa4a",
+        "name": "debug 12",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -236,14 +211,14 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1540,
-        "y": 260,
+        "x": 1640,
+        "y": 240,
         "wires": []
     },
     {
-        "id": "94eb0c588efc8843",
+        "id": "d361f753b48f301a",
         "type": "delay",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "",
         "pauseType": "delay",
         "timeout": "3",
@@ -257,20 +232,20 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 1340,
-        "y": 160,
+        "x": 1440,
+        "y": 140,
         "wires": [
             [
-                "53f637b34faec018",
-                "70e2e4075a0db76f"
+                "fd7c0547f55b695d",
+                "73532c36fc989b36"
             ]
         ]
     },
     {
-        "id": "0425a59bffc02284",
+        "id": "d0b2d22bd84aa921",
         "type": "debug",
-        "z": "4add3e49d0d109e2",
-        "name": "debug 9",
+        "z": "c83e93637860fa4a",
+        "name": "debug 13",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -278,14 +253,14 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 480,
-        "y": 100,
+        "x": 580,
+        "y": 80,
         "wires": []
     },
     {
-        "id": "1c569b2af148ec0d",
+        "id": "c8245725117ca73c",
         "type": "inject",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "SystemStart",
         "props": [
             {
@@ -303,18 +278,18 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 110,
-        "y": 320,
+        "x": 210,
+        "y": 300,
         "wires": [
             [
-                "5b743c5bf49ac9bb"
+                "52408a77a21462b0"
             ]
         ]
     },
     {
-        "id": "5b743c5bf49ac9bb",
+        "id": "52408a77a21462b0",
         "type": "exec",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "command": "python /home/pi/cm2305/physical/lcd_display.py",
         "addpay": "",
         "append": "255 255 255 'Ready'",
@@ -323,8 +298,8 @@
         "winHide": false,
         "oldrc": false,
         "name": "LCDReady",
-        "x": 290,
-        "y": 320,
+        "x": 390,
+        "y": 300,
         "wires": [
             [],
             [],
@@ -332,9 +307,9 @@
         ]
     },
     {
-        "id": "2129fc0d9fad32f2",
+        "id": "5038f23fe04526c3",
         "type": "exec",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "command": "python /home/pi/cm2305/physical/lcd_display.py",
         "addpay": "",
         "append": "255 255 255 'Scanning...'",
@@ -343,21 +318,21 @@
         "winHide": false,
         "oldrc": false,
         "name": "LCDScanning",
-        "x": 560,
-        "y": 200,
+        "x": 660,
+        "y": 180,
         "wires": [
             [
-                "f0ea897e2a3ab81b",
-                "36964c16047f9acb"
+                "753abc61e0492379",
+                "697254028c19857f"
             ],
             [],
             []
         ]
     },
     {
-        "id": "f0ea897e2a3ab81b",
+        "id": "753abc61e0492379",
         "type": "delay",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "Delay 1s",
         "pauseType": "delay",
         "timeout": "1",
@@ -371,28 +346,28 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 340,
-        "y": 500,
+        "x": 440,
+        "y": 480,
         "wires": [
             [
-                "76fd4ff4c446c695"
+                "36c91a4e8f050592"
             ]
         ]
     },
     {
-        "id": "51d4c2af3fde32ef",
+        "id": "c32e9a9afed9959d",
         "type": "comment",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "AI goes here (replace random decision)",
         "info": "",
-        "x": 450,
-        "y": 540,
+        "x": 550,
+        "y": 520,
         "wires": []
     },
     {
-        "id": "8f641df494dc49d1",
+        "id": "7f067db9f56fc38e",
         "type": "exec",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "command": "python /home/pi/cm2305/physical/lcd_display.py",
         "addpay": "",
         "append": "255 255 255 'Ready'",
@@ -401,8 +376,8 @@
         "winHide": false,
         "oldrc": false,
         "name": "LCDReady",
-        "x": 1410,
-        "y": 340,
+        "x": 1510,
+        "y": 320,
         "wires": [
             [],
             [],
@@ -410,10 +385,10 @@
         ]
     },
     {
-        "id": "61c51c5cb733860a",
+        "id": "873431832b3f1369",
         "type": "debug",
-        "z": "4add3e49d0d109e2",
-        "name": "debug 11",
+        "z": "c83e93637860fa4a",
+        "name": "debug 14",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -421,14 +396,14 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 580,
-        "y": 300,
+        "x": 680,
+        "y": 280,
         "wires": []
     },
     {
-        "id": "36964c16047f9acb",
+        "id": "697254028c19857f",
         "type": "debug",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "debug 15",
         "active": true,
         "tosidebar": true,
@@ -437,14 +412,14 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 720,
-        "y": 80,
+        "x": 820,
+        "y": 60,
         "wires": []
     },
     {
-        "id": "872f95ae586d5334",
+        "id": "4ded973fd08c1577",
         "type": "function",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "WaitForMovementStop",
         "func": "// When motion is detected, restart the timer\nlet timeout = context.get(\"timeout\");\n\nif (timeout) {\n    clearTimeout(timeout);\n}\n\ntimeout = setTimeout(() => {\n    // Trigger the next node after 0.5s of no motion\n    node.send({ payload: \"no motion - go ahead\" });\n}, 1500);\n\ncontext.set(\"timeout\", timeout);\n\n// Don't send anything immediately\nreturn null;\n",
         "outputs": 1,
@@ -453,44 +428,44 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 260,
-        "y": 260,
+        "x": 360,
+        "y": 240,
         "wires": [
             [
-                "61c51c5cb733860a",
-                "767407d213d1caf4"
+                "873431832b3f1369",
+                "ada0465b8bd41d33"
             ]
         ]
     },
     {
-        "id": "ae84265a5e9dee97",
+        "id": "5338cbfb7761d93f",
         "type": "serial in",
-        "z": "4add3e49d0d109e2",
-        "name": "SlaveGroup7",
-        "serial": "6ffb8cbfcce8d624",
-        "x": 110,
-        "y": 160,
+        "z": "c83e93637860fa4a",
+        "name": "USBArduinoMotionSense",
+        "serial": "f1d0264ee790d68f",
+        "x": 130,
+        "y": 140,
         "wires": [
             [
-                "5dd9c0eeb26e3d42",
-                "872f95ae586d5334"
+                "b113e7a925fefb91",
+                "4ded973fd08c1577"
             ]
         ]
     },
     {
-        "id": "fe8c02469b2e6bf1",
+        "id": "5213ccfc07cf3814",
         "type": "serial out",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "MotorControl",
-        "serial": "6ffb8cbfcce8d624",
-        "x": 1290,
-        "y": 100,
+        "serial": "f1d0264ee790d68f",
+        "x": 1390,
+        "y": 80,
         "wires": []
     },
     {
-        "id": "5e9ad0ea5202ad37",
+        "id": "1acb2140bbe6e74f",
         "type": "function",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "ServoOpenCommand",
         "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 90\\n\";\nreturn msg;\n",
         "outputs": 1,
@@ -499,19 +474,19 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1080,
-        "y": 140,
+        "x": 1180,
+        "y": 120,
         "wires": [
             [
-                "fe8c02469b2e6bf1",
-                "94eb0c588efc8843"
+                "5213ccfc07cf3814",
+                "d361f753b48f301a"
             ]
         ]
     },
     {
-        "id": "53f637b34faec018",
+        "id": "fd7c0547f55b695d",
         "type": "function",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "ServoCloseCommand",
         "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 0\\n\";\nreturn msg;\n",
         "outputs": 1,
@@ -520,28 +495,28 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1540,
-        "y": 120,
+        "x": 1640,
+        "y": 100,
         "wires": [
             [
-                "7f4102d7345a203a"
+                "cfcbb9bb65f2dfd0"
             ]
         ]
     },
     {
-        "id": "7f4102d7345a203a",
+        "id": "cfcbb9bb65f2dfd0",
         "type": "serial out",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "MotorControl",
-        "serial": "6ffb8cbfcce8d624",
-        "x": 1730,
-        "y": 60,
+        "serial": "f1d0264ee790d68f",
+        "x": 1830,
+        "y": 40,
         "wires": []
     },
     {
-        "id": "70e2e4075a0db76f",
+        "id": "73532c36fc989b36",
         "type": "delay",
-        "z": "4add3e49d0d109e2",
+        "z": "c83e93637860fa4a",
         "name": "",
         "pauseType": "delay",
         "timeout": "2",
@@ -555,13 +530,145 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 1500,
-        "y": 180,
+        "x": 1600,
+        "y": 160,
         "wires": [
             [
-                "10f4b073747238f4"
+                "e32c483951e2e6c7"
             ]
         ]
+    },
+    {
+        "id": "5c696df72d61e923",
+        "type": "function",
+        "z": "c83e93637860fa4a",
+        "name": "ServoOpenCommand",
+        "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 90\\n\";\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 500,
+        "wires": [
+            [
+                "dc2b2b4a01d587d8",
+                "08ed359ed4885fea"
+            ]
+        ]
+    },
+    {
+        "id": "dc2b2b4a01d587d8",
+        "type": "serial out",
+        "z": "c83e93637860fa4a",
+        "name": "MotorControl",
+        "serial": "6ffb8cbfcce8d624",
+        "x": 1390,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "6490615dbf8b3679",
+        "type": "function",
+        "z": "c83e93637860fa4a",
+        "name": "ServoCloseCommand",
+        "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 0\\n\";\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1640,
+        "y": 480,
+        "wires": [
+            [
+                "c4771d11f6fc1771"
+            ]
+        ]
+    },
+    {
+        "id": "c4771d11f6fc1771",
+        "type": "serial out",
+        "z": "c83e93637860fa4a",
+        "name": "MotorControl",
+        "serial": "6ffb8cbfcce8d624",
+        "x": 1830,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "453e57731f34d7e5",
+        "type": "delay",
+        "z": "c83e93637860fa4a",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1260,
+        "y": 400,
+        "wires": [
+            [
+                "e32c483951e2e6c7"
+            ]
+        ]
+    },
+    {
+        "id": "08ed359ed4885fea",
+        "type": "delay",
+        "z": "c83e93637860fa4a",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1380,
+        "y": 460,
+        "wires": [
+            [
+                "453e57731f34d7e5",
+                "6490615dbf8b3679"
+            ]
+        ]
+    },
+    {
+        "id": "f1d0264ee790d68f",
+        "type": "serial-port",
+        "name": "",
+        "serialport": "/dev/ttyACM0",
+        "serialbaud": "9600",
+        "databits": 8,
+        "parity": "none",
+        "stopbits": 1,
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": 10000
     },
     {
         "id": "6ffb8cbfcce8d624",
