@@ -1,0 +1,1 @@
+sudo rfcomm connect hci0 00:0E:EA:CF:77:DB
