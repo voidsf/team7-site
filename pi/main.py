@@ -47,7 +47,7 @@ def main():
     print(
         f"Successfully updated website with item type: {item_type}, device id: {DEVICE_ID}")
     # send output to nodered
-    print(is_recyclable)
+    return is_recyclable
 
 
 if __name__ == "__main__":
