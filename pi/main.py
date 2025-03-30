@@ -10,8 +10,8 @@ from visualization.display_image import display_image
 from visualization.display_image_with_bounding_boxes import display_image_with_bounding_boxes
 from web.update_db import update_db
 
-JSON_PATH = "~/cm2305/pi/tmp/result.json"
-CAMERA_PATH = "~/cm2305/pi/tmp/captured_image.jpg"
+JSON_PATH = "tmp/result.json"
+CAMERA_PATH = "tmp/captured_image.jpg"
 DEVICE_ID = "Year 3 Classroom"
 
 
@@ -47,8 +47,7 @@ def main():
     print(
         f"Successfully updated website with item type: {item_type}, device id: {DEVICE_ID}")
     # send output to nodered
-    print(is_recyclable)
-
+   return is_recyclable
 
 if __name__ == "__main__":
     main()
