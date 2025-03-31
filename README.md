@@ -37,12 +37,13 @@
 ---
 # Node-Red
 System relies on Node-Red flow
-### Installs
+**Installs:**
 In Node-Red browser interface (after doing 'start-node-red' on the Pi), navigate to the settings dropdown and click Manage Palette.
 #### Ensure the following are installed:
 - 'node-red'
 - 'node-red-node-daemon'
 - 'node-red-node-serialport'
+---
 
 # Connecting Bluetooth
 
