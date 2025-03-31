@@ -16,23 +16,23 @@
 
 # Setup
 
-## Raspberry Pi
+### Raspberry Pi
 1. Install **GrovePi+ Board**
 2. **Pin I2C (any):** V5.0 RGB LCD Screen
 3. **[Place camera and button setup here]**
 
-## Arduino A
+### Arduino A
 1. Install **Grove Hat**
 2. **Pin D2:** Motion Sensor
 3. **Pin D5:** Servo Motor
-4. Upload sketch: `arduino_recyclable_and_motion_sensor_usb_ver`
-5. Connect to **Raspberry Pi using MicroUSB cable**
+4. Upload sketch: **`arduino_recyclable_and_motion_sensor_usb_ver`**
+5. Connect to Raspberry Pi using MicroUSB cable
 
-## Arduino B
+### Arduino B
 1. Install **Grove Hat**
 2. **Pin D5:** Servo Motor
 3. **Pin D8:** Bluetooth Serial Module
-4. Upload sketch: `arduino_not_recyclable_bluetooth_ver`
+4. Upload sketch: **`arduino_not_recyclable_bluetooth_ver`**
 
 ---
 
@@ -43,7 +43,7 @@ Depending on the **Bluetooth module** used, the **MAC_ADDRESS** will either be:
 - `00:0E:EA:CF:77:DB`
 - `00:0E:EA:CF:77:A8`
 
-### Steps to Connect:
+### Steps to Connect (In Pi Terminal):
 ```sh
 bluetoothctl
 default-agent
