@@ -1,0 +1,6 @@
+SlaveAGroup7 (for motion sensing and recyclable motor)
+sudo rfcomm connect hci0 00:0E:EA:CF:77:DB
+
+SlaveBGroup7 (for not recyclable motor)
+sudo rfcomm connect hci0 00:0E:EA:CF:77:A8
+
