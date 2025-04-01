@@ -19,8 +19,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 880,
-        "y": 160,
+        "x": 980,
+        "y": 180,
         "wires": []
     },
     {
@@ -35,8 +35,8 @@
         "winHide": false,
         "oldrc": false,
         "name": "RandomDecision",
-        "x": 610,
-        "y": 480,
+        "x": 710,
+        "y": 500,
         "wires": [
             [
                 "29965240e8292deb"
@@ -49,7 +49,7 @@
         "id": "29965240e8292deb",
         "type": "function",
         "z": "c83e93637860fa4a",
-        "name": "CleanBoolean",
+        "name": "CleanMsgPayload",
         "func": "// Remove any leading and trailing whitespace from the payload string.\nmsg.payload = msg.payload.trim();\n\n// Pass the modified message to the next node.\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
@@ -57,47 +57,12 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 900,
-        "y": 220,
+        "x": 930,
+        "y": 400,
         "wires": [
             [
-                "4c514aecbdcbb83c",
-                "8f757360a71b9341"
-            ]
-        ]
-    },
-    {
-        "id": "4c514aecbdcbb83c",
-        "type": "switch",
-        "z": "c83e93637860fa4a",
-        "name": "IsRecyclableSwitch",
-        "property": "payload",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "True",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "False",
-                "vt": "str"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 2,
-        "x": 910,
-        "y": 280,
-        "wires": [
-            [
-                "84d3b9eb41c2d089",
-                "1acb2140bbe6e74f"
-            ],
-            [
-                "5e946fc69c48870c",
-                "5c696df72d61e923"
+                "8f757360a71b9341",
+                "4c514aecbdcbb83c"
             ]
         ]
     },
@@ -113,8 +78,8 @@
         "winHide": false,
         "oldrc": false,
         "name": "LCDIsRecyclable",
-        "x": 1190,
-        "y": 240,
+        "x": 1290,
+        "y": 260,
         "wires": [
             [],
             [],
@@ -133,8 +98,8 @@
         "winHide": false,
         "oldrc": false,
         "name": "LCDIsNotRecyclable",
-        "x": 1180,
-        "y": 320,
+        "x": 1280,
+        "y": 340,
         "wires": [
             [],
             [],
@@ -153,8 +118,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 360,
-        "y": 40,
+        "x": 460,
+        "y": 60,
         "wires": []
     },
     {
@@ -169,8 +134,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 430,
-        "y": 140,
+        "x": 530,
+        "y": 160,
         "wires": [
             [
                 "d0b2d22bd84aa921",
@@ -190,8 +155,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1490,
-        "y": 240,
+        "x": 1590,
+        "y": 260,
         "wires": [
             [
                 "a4af36dafe7fe4f8",
@@ -211,8 +176,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1640,
-        "y": 240,
+        "x": 1740,
+        "y": 260,
         "wires": []
     },
     {
@@ -232,8 +197,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 1440,
-        "y": 140,
+        "x": 1540,
+        "y": 160,
         "wires": [
             [
                 "fd7c0547f55b695d",
@@ -253,8 +218,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 580,
-        "y": 80,
+        "x": 680,
+        "y": 100,
         "wires": []
     },
     {
@@ -278,8 +243,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 210,
-        "y": 300,
+        "x": 310,
+        "y": 320,
         "wires": [
             [
                 "52408a77a21462b0"
@@ -298,8 +263,8 @@
         "winHide": false,
         "oldrc": false,
         "name": "LCDReady",
-        "x": 390,
-        "y": 300,
+        "x": 490,
+        "y": 320,
         "wires": [
             [],
             [],
@@ -318,8 +283,8 @@
         "winHide": false,
         "oldrc": false,
         "name": "LCDScanning",
-        "x": 660,
-        "y": 180,
+        "x": 760,
+        "y": 200,
         "wires": [
             [
                 "753abc61e0492379",
@@ -346,8 +311,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 440,
-        "y": 480,
+        "x": 540,
+        "y": 500,
         "wires": [
             [
                 "36c91a4e8f050592"
@@ -360,8 +325,8 @@
         "z": "c83e93637860fa4a",
         "name": "AI goes here (replace random decision)",
         "info": "",
-        "x": 550,
-        "y": 520,
+        "x": 710,
+        "y": 540,
         "wires": []
     },
     {
@@ -376,8 +341,8 @@
         "winHide": false,
         "oldrc": false,
         "name": "LCDReady",
-        "x": 1510,
-        "y": 320,
+        "x": 1610,
+        "y": 340,
         "wires": [
             [],
             [],
@@ -396,8 +361,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 680,
-        "y": 280,
+        "x": 780,
+        "y": 300,
         "wires": []
     },
     {
@@ -412,8 +377,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 820,
-        "y": 60,
+        "x": 920,
+        "y": 80,
         "wires": []
     },
     {
@@ -428,39 +393,14 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
-        "y": 240,
+        "x": 460,
+        "y": 260,
         "wires": [
             [
                 "873431832b3f1369",
                 "ada0465b8bd41d33"
             ]
         ]
-    },
-    {
-        "id": "5338cbfb7761d93f",
-        "type": "serial in",
-        "z": "c83e93637860fa4a",
-        "name": "USBArduinoMotionSense",
-        "serial": "f1d0264ee790d68f",
-        "x": 130,
-        "y": 140,
-        "wires": [
-            [
-                "b113e7a925fefb91",
-                "4ded973fd08c1577"
-            ]
-        ]
-    },
-    {
-        "id": "5213ccfc07cf3814",
-        "type": "serial out",
-        "z": "c83e93637860fa4a",
-        "name": "MotorControl",
-        "serial": "f1d0264ee790d68f",
-        "x": 1390,
-        "y": 80,
-        "wires": []
     },
     {
         "id": "1acb2140bbe6e74f",
@@ -474,8 +414,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1180,
-        "y": 120,
+        "x": 1280,
+        "y": 140,
         "wires": [
             [
                 "5213ccfc07cf3814",
@@ -495,23 +435,13 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1640,
-        "y": 100,
+        "x": 1740,
+        "y": 120,
         "wires": [
             [
                 "cfcbb9bb65f2dfd0"
             ]
         ]
-    },
-    {
-        "id": "cfcbb9bb65f2dfd0",
-        "type": "serial out",
-        "z": "c83e93637860fa4a",
-        "name": "MotorControl",
-        "serial": "f1d0264ee790d68f",
-        "x": 1830,
-        "y": 40,
-        "wires": []
     },
     {
         "id": "73532c36fc989b36",
@@ -530,8 +460,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 1600,
-        "y": 160,
+        "x": 1700,
+        "y": 180,
         "wires": [
             [
                 "e32c483951e2e6c7"
@@ -550,24 +480,14 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1180,
-        "y": 500,
+        "x": 1280,
+        "y": 520,
         "wires": [
             [
                 "dc2b2b4a01d587d8",
                 "08ed359ed4885fea"
             ]
         ]
-    },
-    {
-        "id": "dc2b2b4a01d587d8",
-        "type": "serial out",
-        "z": "c83e93637860fa4a",
-        "name": "MotorControl",
-        "serial": "6ffb8cbfcce8d624",
-        "x": 1390,
-        "y": 520,
-        "wires": []
     },
     {
         "id": "6490615dbf8b3679",
@@ -581,23 +501,13 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1640,
-        "y": 480,
+        "x": 1740,
+        "y": 500,
         "wires": [
             [
                 "c4771d11f6fc1771"
             ]
         ]
-    },
-    {
-        "id": "c4771d11f6fc1771",
-        "type": "serial out",
-        "z": "c83e93637860fa4a",
-        "name": "MotorControl",
-        "serial": "6ffb8cbfcce8d624",
-        "x": 1830,
-        "y": 420,
-        "wires": []
     },
     {
         "id": "453e57731f34d7e5",
@@ -616,8 +526,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 1260,
-        "y": 400,
+        "x": 1360,
+        "y": 420,
         "wires": [
             [
                 "e32c483951e2e6c7"
@@ -641,12 +551,154 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 1380,
-        "y": 460,
+        "x": 1480,
+        "y": 480,
         "wires": [
             [
                 "453e57731f34d7e5",
                 "6490615dbf8b3679"
+            ]
+        ]
+    },
+    {
+        "id": "5338cbfb7761d93f",
+        "type": "serial in",
+        "z": "c83e93637860fa4a",
+        "name": "USBArduinoMotionSense",
+        "serial": "f1d0264ee790d68f",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "b113e7a925fefb91",
+                "4ded973fd08c1577"
+            ]
+        ]
+    },
+    {
+        "id": "5213ccfc07cf3814",
+        "type": "serial out",
+        "z": "c83e93637860fa4a",
+        "name": "MotorControl",
+        "serial": "f1d0264ee790d68f",
+        "x": 1490,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "cfcbb9bb65f2dfd0",
+        "type": "serial out",
+        "z": "c83e93637860fa4a",
+        "name": "MotorControl",
+        "serial": "f1d0264ee790d68f",
+        "x": 1930,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "dc2b2b4a01d587d8",
+        "type": "serial out",
+        "z": "c83e93637860fa4a",
+        "name": "MotorControl",
+        "serial": "6ffb8cbfcce8d624",
+        "x": 1490,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "c4771d11f6fc1771",
+        "type": "serial out",
+        "z": "c83e93637860fa4a",
+        "name": "MotorControl",
+        "serial": "6ffb8cbfcce8d624",
+        "x": 1930,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "e9af1e7abc928264",
+        "type": "serial in",
+        "z": "c83e93637860fa4a",
+        "name": "USBArduinoManualButtons",
+        "serial": "",
+        "x": 730,
+        "y": 620,
+        "wires": [
+            [
+                "9a7a9f664e0cf13e"
+            ]
+        ]
+    },
+    {
+        "id": "4c514aecbdcbb83c",
+        "type": "switch",
+        "z": "c83e93637860fa4a",
+        "name": "IsRecyclableSwitch",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "True",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "BUTTON1 PRESSED",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "False",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "BUTTON2 PRESSED",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 1010,
+        "y": 300,
+        "wires": [
+            [
+                "1acb2140bbe6e74f",
+                "84d3b9eb41c2d089"
+            ],
+            [
+                "1acb2140bbe6e74f",
+                "84d3b9eb41c2d089"
+            ],
+            [
+                "5e946fc69c48870c",
+                "5c696df72d61e923"
+            ],
+            [
+                "5e946fc69c48870c",
+                "5c696df72d61e923"
+            ]
+        ]
+    },
+    {
+        "id": "9a7a9f664e0cf13e",
+        "type": "function",
+        "z": "c83e93637860fa4a",
+        "name": "Lock",
+        "func": "// Get the current value of 'systemLocked' from the flow context.\n// If it's not set yet, default to 'false'.\nlet systemLocked = flow.get('systemLocked') || false;\n\n// If the system is already locked, stop here and do not pass the message forward.\nif (systemLocked) {\n    return null; // Prevent further processing\n}\n\n// Set 'systemLocked' to true in the flow context to prevent re-entry.\nflow.set('systemLocked', true);\n\n// Continue passing the message to the next node.\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 620,
+        "wires": [
+            [
+                "29965240e8292deb"
             ]
         ]
     },
