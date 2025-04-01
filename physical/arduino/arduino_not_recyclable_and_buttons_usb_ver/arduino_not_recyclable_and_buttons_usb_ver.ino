@@ -25,7 +25,7 @@ void setup()
 {
   Serial.begin(9600);      // Debugging serial monitor
   myservo.attach(SERVO_PIN);  // Attach servo motor to pin 5
-  myservo.write(0);  // Set initial position to 0 degrees
+  myservo.write(90);  // Set initial position to 90 degrees
 
   // Initialize button pins as input
   pinMode(BUTTON1_PIN, INPUT_PULLUP);

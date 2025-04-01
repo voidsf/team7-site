@@ -27,7 +27,7 @@ void setup()
   Serial.begin(9600);      // Debugging serial monitor
   pinMode(PIR_MOTION_SENSOR, INPUT);
   myservo.attach(SERVO_PIN);  // Attach servo motor to pin 5
-  myservo.write(0);  // Set initial position to 0 degrees
+  myservo.write(90);  // Set initial position to 90 degrees
   setupBlueToothConnection(); // Initialize Bluetooth
   
   Serial.println("System Ready");
