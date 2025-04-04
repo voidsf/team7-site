@@ -1,4 +1,4 @@
-pi/cv/tmp/*
+pi/tmp/*
 *__pycache__*
 *.pyc
 /site
