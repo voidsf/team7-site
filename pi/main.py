@@ -44,6 +44,8 @@ def main():
 
     # send parsed result to website
     update_db(item_type, DEVICE_ID)
+    print(
+        f"Successfully updated website with item type: {item_type}, device id: {DEVICE_ID}")
     # send output to nodered
     print(is_recyclable)
 
