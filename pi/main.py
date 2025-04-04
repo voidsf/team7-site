@@ -28,7 +28,7 @@ def main():
 
     # make request to model for result
     result = run_inference(image_path)
-    print("Successfully ran inference, result at {JSON_PATH}")
+    print(f"Successfully ran inference, result at {JSON_PATH}")
     dump_json(result, JSON_PATH)
 
     # parse and categorize result
