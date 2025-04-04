@@ -10,8 +10,8 @@ from visualization.display_image import display_image
 from visualization.display_image_with_bounding_boxes import display_image_with_bounding_boxes
 from web.update_db import update_db
 
-JSON_PATH = "tmp/result.json"
-CAMERA_PATH = "tmp/captured_image.jpg"
+JSON_PATH = "~/cm2305/pi/tmp/result.json"
+CAMERA_PATH = "~/cm2305/pi/tmp/captured_image.jpg"
 DEVICE_ID = "Year 3 Classroom"
 
 
@@ -19,7 +19,7 @@ def main():
     # capture / validate image
     image_path = capture_image(CAMERA_PATH)
     print(f"Successfully captured image: {image_path}")
-    # image_path = "images/test1.jpg"   # static image for testing
+    # image_path = "~/cm2305/pi/images/test1.jpg"   # static image for testing
     try:
         validate_image(image_path)
     except Exception as e:
