@@ -15,36 +15,48 @@
 #define SERVO_PIN 5  // 🔌 Grove PWM D5 (Servo motor)
 
 // Define pins for Grove LED Buttons
-#define BUTTON1_PIN 8  // Grove Button 1 (D7)
-#define BUTTON2_PIN 4  // Grove Button 2 (D3)
+#define BUTTON1_PIN 3  // Grove Button 1 (D3)
+#define BUTTON2_PIN 4  // Grove Button 2 (D4)
 
 // Create Servo object
 Servo myservo;
 
-void setup() {
-  Serial.begin(9600);               // Start serial communication
-  myservo.attach(SERVO_PIN);       // Attach servo motor to pin 5
-  myservo.write(90);               // Set initial position to 90 degrees
+void setup()
+{
+  Serial.begin(9600);      // Debugging serial monitor
+  myservo.attach(SERVO_PIN);  // Attach servo motor to pin 5
+  myservo.write(90);  // Set initial position to 90 degrees
 
-  // Initialize button pins as input with internal pull-ups
+  // Initialize button pins as input
   pinMode(BUTTON1_PIN, INPUT_PULLUP);
   pinMode(BUTTON2_PIN, INPUT_PULLUP);
-
+  
+  // Initialize LED pins as output
+  pinMode(LED1_PIN, OUTPUT);
+  pinMode(LED2_PIN, OUTPUT);
+  
+  digitalWrite(LED1_PIN, LOW); // Ensure LEDs start off
+  digitalWrite(LED2_PIN, LOW);
+  
   Serial.println("System Ready");
 }
 
-void loop() {
-  // === USB Serial Command Handling ===
+void loop()
+{
+  // **Check for USB serial commands from Node-RED**
   if (Serial.available()) {
-    String command = Serial.readStringUntil('\n');
-    command.trim();
+    String command = Serial.readStringUntil('\n'); // Read full command
+    command.trim(); // Remove whitespace
 
-    Serial.println("Received: " + command);
+    Serial.println("Received: " + command); // Debugging
 
+    // **Check if the command starts with "SERVO "** (e.g., "SERVO 90")
     if (command.startsWith("SERVO ")) {
-      int angle = command.substring(6).toInt();
+      int angle = command.substring(6).toInt(); // Extract angle value
+
+      // **Ensure the angle is between 0 and 180**
       if (angle >= 0 && angle <= 180) {
-        myservo.write(angle);
+        myservo.write(angle);  // Move servo to specified angle
         Serial.print("Servo moved to: ");
         Serial.println(angle);
       } else {
@@ -53,14 +65,14 @@ void loop() {
     }
   }
 
-  // === Button Press Detection ===
-  if (digitalRead(BUTTON1_PIN) == LOW) {  // LOW when pressed due to pull-up
+  // **Check button presses and send messages**
+  if (digitalRead(BUTTON1_PIN) == HIGH) {
     Serial.println("BUTTON1 PRESSED");
-    delay(300); // Debounce
+    delay(300); // Debounce delay
   }
 
-  if (digitalRead(BUTTON2_PIN) == LOW) {
+  if (digitalRead(BUTTON2_PIN) == HIGH) {
     Serial.println("BUTTON2 PRESSED");
-    delay(300); // Debounce
+    delay(300); // Debounce delay
   }
 }

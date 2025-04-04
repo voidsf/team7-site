@@ -29,19 +29,16 @@ void loop()
 {
   // 1. **Check for USB commands from Node-RED**
   if (Serial.available()) {
-    String command = Serial.readStringUntil('\n');
-    command.trim();
+    String command = Serial.readStringUntil('\n'); // Read full command
+    command.trim(); // Remove whitespace
 
-    Serial.println("Received: " + command);
-
+    // **Check if the command starts with "SERVO "** (e.g., "SERVO 90")
     if (command.startsWith("SERVO ")) {
-      int angle = command.substring(6).toInt();
+      int angle = command.substring(6).toInt(); // Extract angle value
+
+      // **Ensure the angle is between 0 and 180**
       if (angle >= 0 && angle <= 180) {
-        myservo.write(angle);
-        Serial.print("Servo moved to: ");
-        Serial.println(angle);
-      } else {
-        Serial.println("Invalid angle! Must be 0-180.");
+        myservo.write(angle);  // Move servo to specified angle
       }
     }
   }
