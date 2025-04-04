@@ -1,1 +1,3 @@
+pi/cv/tmp/*
+*__pycache__/*
 /site
