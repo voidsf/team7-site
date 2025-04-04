@@ -18,6 +18,7 @@ DEVICE_ID = "Year 3 Classroom"
 def main():
     # capture / validate image
     image_path = capture_image(CAMERA_PATH)
+    print(f"Successfully captured image: {image_path}")
     # image_path = "images/test1.jpg"   # static image for testing
     try:
         validate_image(image_path)
@@ -27,14 +28,15 @@ def main():
 
     # make request to model for result
     result = run_inference(image_path)
-    # print(result)
+    print("Successfully ran inference, result at {JSON_PATH}")
+    dump_json(result, JSON_PATH)
 
     # parse and categorize result
     # currently only works for single item todo: account for multiple items by looking at bounding boxes etc.
     item_type, confidence = parse_result(result)
     is_recyclable = item_type != "Non-Recyclable"
-
-    dump_json({"item_type": item_type, "is_recyclable": is_recyclable}, JSON_PATH)
+    print(
+        f"Item categorized as: {item_type}, {is_recyclable} with confidence: {confidence}")
 
     # display image for debug
     # display_image(image_path)
