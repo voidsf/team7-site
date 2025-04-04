@@ -40,9 +40,10 @@ def main():
     # display_image(image_path)
     # display_image_with_bounding_boxes(image_path, result)
 
-    # send parsed result to website and arduinos
+    # send parsed result to website
     update_db(item_type, DEVICE_ID)
-    # activate arduinos with is_recyclable
+    # send output to nodered
+    print(is_recyclable)
 
 
 if __name__ == "__main__":
