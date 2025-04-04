@@ -3,10 +3,9 @@ def parse_result(result):
     predictions = result["predictions"]
 # if there is a multiple items detected it finds the one with the most confidence
     if predictions:
-        for i in predictions:
-            if i['confidence'] > max_confidence:
-                max_confidence = i['confidence']
-                item = predictions(i)
+        for i, item in enumerate(predictions):
+            if item['confidence'] > max_confidence:
+                max_confidence = item['confidence']
         if max_confidence > 0.5:
             output_type = item['class']
         else:
