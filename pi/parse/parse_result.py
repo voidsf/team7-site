@@ -1,6 +1,6 @@
 def parse_result(result):
     max_confidence = 0.0
-    predictions = result[predictions]
+    predictions = result["predictions"]
 # if there is a multiple items detected it finds the one with the most confidence
     if predictions:
         for i in predictions:
