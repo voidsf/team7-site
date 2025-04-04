@@ -2,3 +2,7 @@ pi/cv/tmp/*
 *__pycache__*
 *.pyc
 /site
+/node_modules
+/build
+tsconfig.tsbuildinfo
+*.db
