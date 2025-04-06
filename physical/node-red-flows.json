@@ -1,11 +1,704 @@
 [
     {
-        "id": "c83e93637860fa4a",
+        "id": "0ecc6dbed99f7f08",
         "type": "tab",
         "label": "Flow 2",
         "disabled": false,
         "info": "",
         "env": []
+    },
+    {
+        "id": "ec5c7422aaa592d4",
+        "type": "exec",
+        "z": "0ecc6dbed99f7f08",
+        "command": "python /home/pi/cm2305/physical/lcd_display.py",
+        "addpay": "",
+        "append": "0 255 0 'Recyclable'",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "LCDIsRecyclable",
+        "x": 1030,
+        "y": 260,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "db4257b03dd71a52",
+        "type": "exec",
+        "z": "0ecc6dbed99f7f08",
+        "command": "python /home/pi/cm2305/physical/lcd_display.py",
+        "addpay": "",
+        "append": "255 0 0 'Not Recyclable'",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "LCDIsNotRecyclable",
+        "x": 1040,
+        "y": 460,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "0576bc58635b01b1",
+        "type": "function",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Lock",
+        "func": "// Get the current value of 'systemLocked' from the flow context.\n// If it's not set yet, default to 'false'.\nlet systemLocked = flow.get('systemLocked') || false;\n\n// If the system is already locked, stop here and do not pass the message forward.\nif (systemLocked) {\n    return null; // Prevent further processing\n}\n\n// Set 'systemLocked' to true in the flow context to prevent re-entry.\nflow.set('systemLocked', true);\n\n// Continue passing the message to the next node.\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 90,
+        "y": 240,
+        "wires": [
+            [
+                "95c75165c0a70df9"
+            ]
+        ]
+    },
+    {
+        "id": "7db86bb7d27e0ef7",
+        "type": "function",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Unlock",
+        "func": "// Unlock the system by setting 'systemLocked' back to false in the flow context.\nflow.set('systemLocked', false);\n\n// Continue passing the message to the next node (optional, if needed).\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1430,
+        "y": 360,
+        "wires": [
+            [
+                "63221d513b1ace0b",
+                "04eedf041954c5c1"
+            ]
+        ]
+    },
+    {
+        "id": "63221d513b1ace0b",
+        "type": "debug",
+        "z": "0ecc6dbed99f7f08",
+        "name": "DebugProcessFinished",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1630,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "e75fc3c943c448f0",
+        "type": "delay",
+        "z": "0ecc6dbed99f7f08",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1240,
+        "y": 240,
+        "wires": [
+            [
+                "a3ce90c33a1bdf0c",
+                "caef7df0894970d7"
+            ]
+        ]
+    },
+    {
+        "id": "e26a14a51eb27091",
+        "type": "inject",
+        "z": "0ecc6dbed99f7f08",
+        "name": "SystemStart",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 110,
+        "y": 100,
+        "wires": [
+            [
+                "30f62be81f268c6e"
+            ]
+        ]
+    },
+    {
+        "id": "30f62be81f268c6e",
+        "type": "exec",
+        "z": "0ecc6dbed99f7f08",
+        "command": "python /home/pi/cm2305/physical/lcd_display.py",
+        "addpay": "",
+        "append": "255 255 255 'Ready'",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "LCDReady",
+        "x": 270,
+        "y": 100,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "95c75165c0a70df9",
+        "type": "exec",
+        "z": "0ecc6dbed99f7f08",
+        "command": "python /home/pi/cm2305/physical/lcd_display.py",
+        "addpay": "",
+        "append": "255 255 255 'Scanning...'",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "LCDScanning",
+        "x": 240,
+        "y": 260,
+        "wires": [
+            [
+                "62233c5a849e0a8d"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "04eedf041954c5c1",
+        "type": "exec",
+        "z": "0ecc6dbed99f7f08",
+        "command": "python /home/pi/cm2305/physical/lcd_display.py",
+        "addpay": "",
+        "append": "255 255 255 'Ready'",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "LCDReady",
+        "x": 1670,
+        "y": 360,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "a951750ad7460995",
+        "type": "function",
+        "z": "0ecc6dbed99f7f08",
+        "name": "WaitForMovementStop",
+        "func": "// This function waits until motion has stopped for 1.5 seconds before sending a message.\n// It resets the timer each time motion is detected, ensuring only one message is sent after motion ends.\n\n// When motion is detected, restart the timer\nlet timeout = context.get(\"timeout\");\n\nif (timeout) {\n    clearTimeout(timeout);\n}\n\ntimeout = setTimeout(() => {\n    // Trigger the next node after 0.5s of no motion\n    node.send({ payload: \"no motion - go ahead\" });\n}, 1500);\n\ncontext.set(\"timeout\", timeout);\n\n// Don't send anything immediately\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "0576bc58635b01b1"
+            ]
+        ]
+    },
+    {
+        "id": "46204b630822b8eb",
+        "type": "function",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Servo160*Command",
+        "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 180\\n\";\nreturn msg;\n\n// Default is 0",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 200,
+        "wires": [
+            [
+                "e75fc3c943c448f0",
+                "f69c679dc0856c5c"
+            ]
+        ]
+    },
+    {
+        "id": "a3ce90c33a1bdf0c",
+        "type": "function",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Servo90*Command",
+        "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 90\\n\";\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1470,
+        "y": 200,
+        "wires": [
+            [
+                "0dc777db5ea0cddd",
+                "6c7e785731de40e2"
+            ]
+        ]
+    },
+    {
+        "id": "caef7df0894970d7",
+        "type": "delay",
+        "z": "0ecc6dbed99f7f08",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1240,
+        "y": 280,
+        "wires": [
+            [
+                "7db86bb7d27e0ef7"
+            ]
+        ]
+    },
+    {
+        "id": "5a3aac2ecc3a84c0",
+        "type": "function",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Servo90*Command",
+        "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 90\\n\";\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1470,
+        "y": 480,
+        "wires": [
+            [
+                "765b19033f762292",
+                "5ab37470f0941bfb"
+            ]
+        ]
+    },
+    {
+        "id": "8d00f94d29e1239b",
+        "type": "delay",
+        "z": "0ecc6dbed99f7f08",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1240,
+        "y": 440,
+        "wires": [
+            [
+                "7db86bb7d27e0ef7"
+            ]
+        ]
+    },
+    {
+        "id": "a67af4acf117ebe9",
+        "type": "delay",
+        "z": "0ecc6dbed99f7f08",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1240,
+        "y": 480,
+        "wires": [
+            [
+                "8d00f94d29e1239b",
+                "5a3aac2ecc3a84c0"
+            ]
+        ]
+    },
+    {
+        "id": "345dd672bd85a3fa",
+        "type": "serial out",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Arduino0Motor",
+        "serial": "f1d0264ee790d68f",
+        "x": 1240,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "61a4f6748c6071f5",
+        "type": "switch",
+        "z": "0ecc6dbed99f7f08",
+        "name": "IsRecyclableSwitch",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "True",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "BUTTON1 PRESSED",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "False",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "BUTTON2 PRESSED",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 790,
+        "y": 360,
+        "wires": [
+            [
+                "46204b630822b8eb",
+                "ec5c7422aaa592d4",
+                "62f9348934520e46",
+                "cf1878469e2ddd38"
+            ],
+            [
+                "46204b630822b8eb",
+                "ec5c7422aaa592d4",
+                "62f9348934520e46",
+                "cf1878469e2ddd38"
+            ],
+            [
+                "db4257b03dd71a52",
+                "a68cd151a9509ffe",
+                "b8016c2bacbc1638",
+                "cf1878469e2ddd38"
+            ],
+            [
+                "db4257b03dd71a52",
+                "a68cd151a9509ffe",
+                "b8016c2bacbc1638",
+                "cf1878469e2ddd38"
+            ]
+        ]
+    },
+    {
+        "id": "c56de73387c42f9e",
+        "type": "function",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Lock",
+        "func": "// Get the current value of 'systemLocked' from the flow context.\n// If it's not set yet, default to 'false'.\nlet systemLocked = flow.get('systemLocked') || false;\n\n// If the system is already locked, stop here and do not pass the message forward.\nif (systemLocked) {\n    return null; // Prevent further processing\n}\n\n// Set 'systemLocked' to true in the flow context to prevent re-entry.\nflow.set('systemLocked', true);\n\n// Continue passing the message to the next node.\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 90,
+        "y": 360,
+        "wires": [
+            [
+                "61a4f6748c6071f5"
+            ]
+        ]
+    },
+    {
+        "id": "62f9348934520e46",
+        "type": "function",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Servo20*Command",
+        "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 20\\n\";\nreturn msg;\n\n// Default is 0",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1030,
+        "y": 160,
+        "wires": [
+            [
+                "345dd672bd85a3fa"
+            ]
+        ]
+    },
+    {
+        "id": "b8016c2bacbc1638",
+        "type": "function",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Servo20*Command",
+        "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 20\\n\";\nreturn msg;\n\n// Default is 0",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1030,
+        "y": 560,
+        "wires": [
+            [
+                "51c76d5621e0caa1"
+            ]
+        ]
+    },
+    {
+        "id": "a68cd151a9509ffe",
+        "type": "function",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Servo160*Command",
+        "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 180\\n\";\nreturn msg;\n\n// Default is 0",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 520,
+        "wires": [
+            [
+                "a67af4acf117ebe9",
+                "9fb2aca6749a3073"
+            ]
+        ]
+    },
+    {
+        "id": "f69c679dc0856c5c",
+        "type": "serial out",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Arduino1Motor",
+        "serial": "a9eac204ecb8f951",
+        "x": 1260,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "220c7f29c4a945a6",
+        "type": "function",
+        "z": "0ecc6dbed99f7f08",
+        "name": "ParsePayload",
+        "func": "// This function extracts the last occurrence of the word \"True\" or \"False\" from the incoming text payload.\n\n// Get the text from the incoming message\nconst text = msg.payload;\n\n// Find all whole-word matches of \"True\" or \"False\" (case-sensitive)\nconst matches = text.match(/\\b(True|False)\\b/g);\n\n// Set the payload to the last match found, or null if none found\nmsg.payload = matches ? matches[matches.length - 1] : null;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 260,
+        "wires": [
+            [
+                "61a4f6748c6071f5"
+            ]
+        ]
+    },
+    {
+        "id": "62233c5a849e0a8d",
+        "type": "exec",
+        "z": "0ecc6dbed99f7f08",
+        "command": "python /home/pi/cm2305/pi/main.py",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "ProcessImage",
+        "x": 420,
+        "y": 260,
+        "wires": [
+            [
+                "220c7f29c4a945a6"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "b593732f22a2f14d",
+        "type": "serial in",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Arduino1MotionSense",
+        "serial": "a9eac204ecb8f951",
+        "x": 140,
+        "y": 160,
+        "wires": [
+            [
+                "a951750ad7460995"
+            ]
+        ]
+    },
+    {
+        "id": "43d1c43f456b4189",
+        "type": "serial in",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Arduino0ManualButtons",
+        "serial": "f1d0264ee790d68f",
+        "x": 140,
+        "y": 320,
+        "wires": [
+            [
+                "c56de73387c42f9e"
+            ]
+        ]
+    },
+    {
+        "id": "c47323e71b4959c2",
+        "type": "comment",
+        "z": "0ecc6dbed99f7f08",
+        "name": "NoteForLockAndUnlockNodes",
+        "info": "Lock nodes allow only one message through until an Unlock node receives a message.\nThis ensures that once the system detects waste or receives a manual input,\nno further inputs are accepted until the waste has been physically sorted.",
+        "x": 160,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "cf1878469e2ddd38",
+        "type": "debug",
+        "z": "0ecc6dbed99f7f08",
+        "name": "DebugRecyclabilityDecision",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1060,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "9fb2aca6749a3073",
+        "type": "serial out",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Arduino0Motor",
+        "serial": "f1d0264ee790d68f",
+        "x": 1260,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "51c76d5621e0caa1",
+        "type": "serial out",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Arduino1Motor",
+        "serial": "a9eac204ecb8f951",
+        "x": 1240,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "6c7e785731de40e2",
+        "type": "serial out",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Arduino0Motor",
+        "serial": "f1d0264ee790d68f",
+        "x": 1660,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "0dc777db5ea0cddd",
+        "type": "serial out",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Arduino1Motor",
+        "serial": "a9eac204ecb8f951",
+        "x": 1660,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "765b19033f762292",
+        "type": "serial out",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Arduino0Motor",
+        "serial": "f1d0264ee790d68f",
+        "x": 1660,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "5ab37470f0941bfb",
+        "type": "serial out",
+        "z": "0ecc6dbed99f7f08",
+        "name": "Arduino1Motor",
+        "serial": "a9eac204ecb8f951",
+        "x": 1660,
+        "y": 500,
+        "wires": []
     },
     {
         "id": "f1d0264ee790d68f",
@@ -28,27 +721,7 @@
         "responsetimeout": 10000
     },
     {
-        "id": "6ffb8cbfcce8d624",
-        "type": "serial-port",
-        "name": "",
-        "serialport": "/dev/rfcomm0",
-        "serialbaud": "9600",
-        "databits": 8,
-        "parity": "none",
-        "stopbits": 1,
-        "waitfor": "",
-        "dtr": "none",
-        "rts": "none",
-        "cts": "none",
-        "dsr": "none",
-        "newline": "\\n",
-        "bin": "false",
-        "out": "char",
-        "addchar": "",
-        "responsetimeout": 10000
-    },
-    {
-        "id": "4324d579c4887619",
+        "id": "a9eac204ecb8f951",
         "type": "serial-port",
         "name": "",
         "serialport": "/dev/ttyACM1",
@@ -66,715 +739,5 @@
         "out": "char",
         "addchar": "",
         "responsetimeout": 10000
-    },
-    {
-        "id": "8f757360a71b9341",
-        "type": "debug",
-        "z": "c83e93637860fa4a",
-        "name": "debug 10",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 980,
-        "y": 180,
-        "wires": []
-    },
-    {
-        "id": "36c91a4e8f050592",
-        "type": "exec",
-        "z": "c83e93637860fa4a",
-        "command": "python /home/pi/cm2305/pi/main.py",
-        "addpay": "",
-        "append": "",
-        "useSpawn": "false",
-        "timer": "",
-        "winHide": false,
-        "oldrc": false,
-        "name": "ProcessImage",
-        "x": 700,
-        "y": 500,
-        "wires": [
-            [
-                "1707f407e8983645",
-                "d673944e49aa9257"
-            ],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "84d3b9eb41c2d089",
-        "type": "exec",
-        "z": "c83e93637860fa4a",
-        "command": "python /home/pi/cm2305/physical/lcd_display.py",
-        "addpay": "",
-        "append": "0 255 0 'Recyclable'",
-        "useSpawn": "false",
-        "timer": "",
-        "winHide": false,
-        "oldrc": false,
-        "name": "LCDIsRecyclable",
-        "x": 1290,
-        "y": 260,
-        "wires": [
-            [],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "5e946fc69c48870c",
-        "type": "exec",
-        "z": "c83e93637860fa4a",
-        "command": "python /home/pi/cm2305/physical/lcd_display.py",
-        "addpay": "",
-        "append": "255 0 0 'Not Recyclable'",
-        "useSpawn": "false",
-        "timer": "",
-        "winHide": false,
-        "oldrc": false,
-        "name": "LCDIsNotRecyclable",
-        "x": 1280,
-        "y": 340,
-        "wires": [
-            [],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "b113e7a925fefb91",
-        "type": "debug",
-        "z": "c83e93637860fa4a",
-        "name": "debug 11",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 460,
-        "y": 60,
-        "wires": []
-    },
-    {
-        "id": "ada0465b8bd41d33",
-        "type": "function",
-        "z": "c83e93637860fa4a",
-        "name": "Lock",
-        "func": "// Get the current value of 'systemLocked' from the flow context.\n// If it's not set yet, default to 'false'.\nlet systemLocked = flow.get('systemLocked') || false;\n\n// If the system is already locked, stop here and do not pass the message forward.\nif (systemLocked) {\n    return null; // Prevent further processing\n}\n\n// Set 'systemLocked' to true in the flow context to prevent re-entry.\nflow.set('systemLocked', true);\n\n// Continue passing the message to the next node.\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 530,
-        "y": 160,
-        "wires": [
-            [
-                "d0b2d22bd84aa921",
-                "5038f23fe04526c3"
-            ]
-        ]
-    },
-    {
-        "id": "e32c483951e2e6c7",
-        "type": "function",
-        "z": "c83e93637860fa4a",
-        "name": "Unlock",
-        "func": "// Unlock the system by setting 'systemLocked' back to false in the flow context.\nflow.set('systemLocked', false);\n\n// Continue passing the message to the next node (optional, if needed).\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1590,
-        "y": 260,
-        "wires": [
-            [
-                "a4af36dafe7fe4f8",
-                "7f067db9f56fc38e"
-            ]
-        ]
-    },
-    {
-        "id": "a4af36dafe7fe4f8",
-        "type": "debug",
-        "z": "c83e93637860fa4a",
-        "name": "debug 12",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1740,
-        "y": 260,
-        "wires": []
-    },
-    {
-        "id": "d361f753b48f301a",
-        "type": "delay",
-        "z": "c83e93637860fa4a",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "3",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 1540,
-        "y": 160,
-        "wires": [
-            [
-                "fd7c0547f55b695d",
-                "73532c36fc989b36"
-            ]
-        ]
-    },
-    {
-        "id": "d0b2d22bd84aa921",
-        "type": "debug",
-        "z": "c83e93637860fa4a",
-        "name": "debug 13",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 680,
-        "y": 100,
-        "wires": []
-    },
-    {
-        "id": "c8245725117ca73c",
-        "type": "inject",
-        "z": "c83e93637860fa4a",
-        "name": "SystemStart",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 310,
-        "y": 320,
-        "wires": [
-            [
-                "52408a77a21462b0"
-            ]
-        ]
-    },
-    {
-        "id": "52408a77a21462b0",
-        "type": "exec",
-        "z": "c83e93637860fa4a",
-        "command": "python3 /home/pi/cm2305/physical/lcd_display.py",
-        "addpay": "",
-        "append": "255 255 255 'Ready'",
-        "useSpawn": "false",
-        "timer": "",
-        "winHide": false,
-        "oldrc": false,
-        "name": "LCDReady",
-        "x": 490,
-        "y": 320,
-        "wires": [
-            [],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "5038f23fe04526c3",
-        "type": "exec",
-        "z": "c83e93637860fa4a",
-        "command": "python /home/pi/cm2305/physical/lcd_display.py",
-        "addpay": "",
-        "append": "255 255 255 'Scanning...'",
-        "useSpawn": "false",
-        "timer": "",
-        "winHide": false,
-        "oldrc": false,
-        "name": "LCDScanning",
-        "x": 760,
-        "y": 200,
-        "wires": [
-            [
-                "697254028c19857f",
-                "36c91a4e8f050592"
-            ],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "7f067db9f56fc38e",
-        "type": "exec",
-        "z": "c83e93637860fa4a",
-        "command": "python /home/pi/cm2305/physical/lcd_display.py",
-        "addpay": "",
-        "append": "255 255 255 'Ready'",
-        "useSpawn": "false",
-        "timer": "",
-        "winHide": false,
-        "oldrc": false,
-        "name": "LCDReady",
-        "x": 1610,
-        "y": 340,
-        "wires": [
-            [],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "873431832b3f1369",
-        "type": "debug",
-        "z": "c83e93637860fa4a",
-        "name": "debug 14",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 780,
-        "y": 300,
-        "wires": []
-    },
-    {
-        "id": "697254028c19857f",
-        "type": "debug",
-        "z": "c83e93637860fa4a",
-        "name": "debug 15",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 920,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "4ded973fd08c1577",
-        "type": "function",
-        "z": "c83e93637860fa4a",
-        "name": "WaitForMovementStop",
-        "func": "// When motion is detected, restart the timer\nlet timeout = context.get(\"timeout\");\n\nif (timeout) {\n    clearTimeout(timeout);\n}\n\ntimeout = setTimeout(() => {\n    // Trigger the next node after 0.5s of no motion\n    node.send({ payload: \"no motion - go ahead\" });\n}, 1500);\n\ncontext.set(\"timeout\", timeout);\n\n// Don't send anything immediately\nreturn null;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 460,
-        "y": 260,
-        "wires": [
-            [
-                "873431832b3f1369",
-                "ada0465b8bd41d33"
-            ]
-        ]
-    },
-    {
-        "id": "1acb2140bbe6e74f",
-        "type": "function",
-        "z": "c83e93637860fa4a",
-        "name": "ServoOpenCommand",
-        "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 90\\n\";\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1280,
-        "y": 140,
-        "wires": [
-            [
-                "5213ccfc07cf3814",
-                "d361f753b48f301a"
-            ]
-        ]
-    },
-    {
-        "id": "fd7c0547f55b695d",
-        "type": "function",
-        "z": "c83e93637860fa4a",
-        "name": "ServoCloseCommand",
-        "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 0\\n\";\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1740,
-        "y": 120,
-        "wires": [
-            [
-                "cfcbb9bb65f2dfd0"
-            ]
-        ]
-    },
-    {
-        "id": "73532c36fc989b36",
-        "type": "delay",
-        "z": "c83e93637860fa4a",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "2",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 1700,
-        "y": 180,
-        "wires": [
-            [
-                "e32c483951e2e6c7"
-            ]
-        ]
-    },
-    {
-        "id": "5c696df72d61e923",
-        "type": "function",
-        "z": "c83e93637860fa4a",
-        "name": "ServoOpenCommand",
-        "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 90\\n\";\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1280,
-        "y": 520,
-        "wires": [
-            [
-                "dc2b2b4a01d587d8",
-                "08ed359ed4885fea"
-            ]
-        ]
-    },
-    {
-        "id": "6490615dbf8b3679",
-        "type": "function",
-        "z": "c83e93637860fa4a",
-        "name": "ServoCloseCommand",
-        "func": "// Send \"SERVO [angle]\" to Arduino\nmsg.payload = \"SERVO 0\\n\";\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1740,
-        "y": 500,
-        "wires": [
-            [
-                "c4771d11f6fc1771"
-            ]
-        ]
-    },
-    {
-        "id": "453e57731f34d7e5",
-        "type": "delay",
-        "z": "c83e93637860fa4a",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "2",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 1360,
-        "y": 420,
-        "wires": [
-            [
-                "e32c483951e2e6c7"
-            ]
-        ]
-    },
-    {
-        "id": "08ed359ed4885fea",
-        "type": "delay",
-        "z": "c83e93637860fa4a",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "3",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 1480,
-        "y": 480,
-        "wires": [
-            [
-                "453e57731f34d7e5",
-                "6490615dbf8b3679"
-            ]
-        ]
-    },
-    {
-        "id": "5338cbfb7761d93f",
-        "type": "serial in",
-        "z": "c83e93637860fa4a",
-        "name": "USBArduinoMotionSense",
-        "serial": "4324d579c4887619",
-        "x": 130,
-        "y": 80,
-        "wires": [
-            [
-                "b113e7a925fefb91",
-                "4ded973fd08c1577"
-            ]
-        ]
-    },
-    {
-        "id": "5213ccfc07cf3814",
-        "type": "serial out",
-        "z": "c83e93637860fa4a",
-        "name": "MotorControl",
-        "serial": "4324d579c4887619",
-        "x": 1490,
-        "y": 100,
-        "wires": []
-    },
-    {
-        "id": "cfcbb9bb65f2dfd0",
-        "type": "serial out",
-        "z": "c83e93637860fa4a",
-        "name": "MotorControl",
-        "serial": "4324d579c4887619",
-        "x": 1930,
-        "y": 60,
-        "wires": []
-    },
-    {
-        "id": "dc2b2b4a01d587d8",
-        "type": "serial out",
-        "z": "c83e93637860fa4a",
-        "name": "MotorControl",
-        "serial": "f1d0264ee790d68f",
-        "x": 1490,
-        "y": 540,
-        "wires": []
-    },
-    {
-        "id": "c4771d11f6fc1771",
-        "type": "serial out",
-        "z": "c83e93637860fa4a",
-        "name": "MotorControl",
-        "serial": "f1d0264ee790d68f",
-        "x": 1930,
-        "y": 440,
-        "wires": []
-    },
-    {
-        "id": "e9af1e7abc928264",
-        "type": "serial in",
-        "z": "c83e93637860fa4a",
-        "name": "USBArduinoManualButtons",
-        "serial": "f1d0264ee790d68f",
-        "x": 730,
-        "y": 620,
-        "wires": [
-            [
-                "9a7a9f664e0cf13e",
-                "9ddf623ec7215163"
-            ]
-        ]
-    },
-    {
-        "id": "4c514aecbdcbb83c",
-        "type": "switch",
-        "z": "c83e93637860fa4a",
-        "name": "IsRecyclableSwitch",
-        "property": "payload",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "True",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "BUTTON1 PRESSED",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "False",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "BUTTON2 PRESSED",
-                "vt": "str"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 4,
-        "x": 1010,
-        "y": 300,
-        "wires": [
-            [
-                "1acb2140bbe6e74f",
-                "84d3b9eb41c2d089"
-            ],
-            [
-                "1acb2140bbe6e74f",
-                "84d3b9eb41c2d089"
-            ],
-            [
-                "5e946fc69c48870c",
-                "5c696df72d61e923"
-            ],
-            [
-                "5e946fc69c48870c",
-                "5c696df72d61e923"
-            ]
-        ]
-    },
-    {
-        "id": "9a7a9f664e0cf13e",
-        "type": "function",
-        "z": "c83e93637860fa4a",
-        "name": "Lock",
-        "func": "// Get the current value of 'systemLocked' from the flow context.\n// If it's not set yet, default to 'false'.\nlet systemLocked = flow.get('systemLocked') || false;\n\n// If the system is already locked, stop here and do not pass the message forward.\nif (systemLocked) {\n    return null; // Prevent further processing\n}\n\n// Set 'systemLocked' to true in the flow context to prevent re-entry.\nflow.set('systemLocked', true);\n\n// Continue passing the message to the next node.\nreturn msg;\n",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 930,
-        "y": 620,
-        "wires": [
-            [
-                "4c514aecbdcbb83c"
-            ]
-        ]
-    },
-    {
-        "id": "1707f407e8983645",
-        "type": "debug",
-        "z": "c83e93637860fa4a",
-        "name": "debug 1",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 890,
-        "y": 560,
-        "wires": []
-    },
-    {
-        "id": "9ddf623ec7215163",
-        "type": "debug",
-        "z": "c83e93637860fa4a",
-        "name": "debug 2",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 890,
-        "y": 680,
-        "wires": []
-    },
-    {
-        "id": "effa8f3ff8b68593",
-        "type": "debug",
-        "z": "c83e93637860fa4a",
-        "name": "debug 3",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1020,
-        "y": 380,
-        "wires": []
-    },
-    {
-        "id": "d673944e49aa9257",
-        "type": "function",
-        "z": "c83e93637860fa4a",
-        "name": "ParsePayload",
-        "func": "const text = msg.payload;\n\nconst matches = text.match(/\\b(True|False)\\b/g);\n\nmsg.payload = matches ? matches[matches.length -1] : null;\n\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 840,
-        "y": 440,
-        "wires": [
-            [
-                "4c514aecbdcbb83c",
-                "effa8f3ff8b68593"
-            ]
-        ]
     }
 ]
