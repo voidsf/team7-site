@@ -8,8 +8,7 @@
 - **2x** Button
 - **1x** Motion Sensor
 - **1x** Pi Camera Module
-- **1x** Bluetooth Serial Module
-- **1x** USB-A to MicroUSB Cable
+- **2x** USB-A to MicroUSB Cable
 - **1x** V5.0 RGB LCD Screen
 
 ---
@@ -21,23 +20,25 @@
 2. **Pin I2C (any):** V5.0 RGB LCD Screen
 3. **[Place camera and button setup here]**
 
-### Arduino A
-1. Install **Grove Hat**
-2. **Pin D2:** Motion Sensor
-3. **Pin D5:** Servo Motor
-4. Upload sketch: **`arduino_recyclable_and_motion_sensor_usb_ver`**
-5. Connect to Raspberry Pi using MicroUSB cable
-
-### Arduino B
+### Arduino 0
 1. Install **Grove Hat**
 2. **Pin D5:** Servo Motor
-3. **Pin D8:** Bluetooth Serial Module
-4. Upload sketch: **`arduino_not_recyclable_bluetooth_ver`**
+3. **Pin D3:** Button
+4. **Pin D6:** Button
+5. Upload sketch: **`arduino0_motor_button`**
+6. Connect to Raspberry Pi using MicroUSB cable (ACM Port 0)
+
+### Arduino 1
+1. Install **Grove Hat**
+2. **Pin D5:** Servo Motor
+3. **Pin D2:** Motion Sensor
+4. Upload sketch: **`arduino1_motor_motionsensor`**
+5. Connect to Raspberry Pi using MicroUSB cable (ACM Port 1)
 
 ---
 # Node-Red
 
-The system relies on a Node-Red flow.
+The system relies on a Node-Red flow, stored in the /physical folder
 
 ### Required Installs
 To install the necessary Node-Red packages:
@@ -47,28 +48,6 @@ To install the necessary Node-Red packages:
 3. Navigate to the settings dropdown and click **Manage Palette**.
 4. Ensure the following packages are installed:
    - `node-red`
-   - `node-red-node-daemon`
    - `node-red-node-serialport`
-
----
-
-# Connecting Bluetooth
-
-Depending on the **Bluetooth module** used, the **MAC_ADDRESS** will either be:
-
-- `00:0E:EA:CF:77:DB`
-- `00:0E:EA:CF:77:A8`
-
-### Steps to Connect (In Pi Terminal):
-```sh
-bluetoothctl
-default-agent
-scan on
-scan off
-pair MAC_ADDRESS  # If already paired, consider `remove MAC_ADDRESS` first to avoid issues
-trust MAC_ADDRESS
-exit
-sudo rfcomm connect hci0 MAC_ADDRESS
-```
 
 ---
