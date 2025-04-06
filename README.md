@@ -18,7 +18,7 @@
 ### Raspberry Pi
 1. Install **GrovePi+ Board**
 2. **Pin I2C (any):** V5.0 RGB LCD Screen
-3. **[Place camera and button setup here]**
+3. **Ribbon Cable Port:** Pi Camera Module
 
 ### Arduino 0
 1. Install **Grove Hat**
