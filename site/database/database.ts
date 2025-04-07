@@ -16,23 +16,26 @@ export type DeviceDetails = {
   types: Array<{ type_name: string; count: number }>;
 };
 
+enum ErrorCode {
+  Success = 0,
+  DatabaseDoesNotExist,
+  UserAlreadyExists,
+  DatabaseAlreadyExists,
+  CouldNotCreateDatabase,
+  CouldNotOpenDatabase,
+  UserDoesNotExist,
+  CouldNotReadFromDatabase,
+  DeviceAlreadyExists,
+  UserHasNoDevices,
+  DeviceDoesNotExist,
+}
+
 export type DatabaseRequestStatus = {
   error?: string;
-  code:
-    | 0 // success
-    | 1 // Database does not exist
-    | 2 // A user with this email already exists
-    | 3 // Database already exists
-    | 4 // Could not create database
-    | 5 // Could not open database
-    | 6 // User does not exist
-    | 7 // Could not read from database
-    | 8 // A device with this id already exists
-    | 9 // User has no associated devices
-    | 10
+  code: ErrorCode;
 };
 
-export const SUCCESS: DatabaseRequestStatus = { code: 0 };
+export const SUCCESS: DatabaseRequestStatus = { code: ErrorCode.Success };
 
 export async function createUser(
   fname: string,
@@ -54,14 +57,23 @@ export async function createUser(
   } catch (error) {
     if (error instanceof postgres.PostgresError) {
       // duplicate key value
-      return { error: "A user with this email already exists", code: 2 };
+      return {
+        error: "A user with this email already exists",
+        code: ErrorCode.UserAlreadyExists,
+      };
     }
 
-    return { error: "Could not write to database", code: 3 };
+    return {
+      error: "Could not write to database",
+      code: ErrorCode.CouldNotOpenDatabase,
+    };
   }
 
   if (result === undefined) {
-    return { error: "Could not write to database", code: 3 };
+    return {
+      error: "Could not write to database",
+      code: ErrorCode.CouldNotOpenDatabase,
+    };
   }
 
   return SUCCESS;
@@ -85,12 +97,18 @@ export async function createDevice(
   } catch (error) {
     if (error instanceof postgres.PostgresError) {
       // duplicate key value
-      return { error: "A device with this id already exists", code: 8 };
+      return {
+        error: "A device with this id already exists",
+        code: ErrorCode.DeviceAlreadyExists,
+      };
     }
   }
 
   if (result === undefined) {
-    return { error: "Could not write to database", code: 3 };
+    return {
+      error: "Could not write to database",
+      code: ErrorCode.CouldNotOpenDatabase,
+    };
   }
 
   return SUCCESS;
@@ -108,11 +126,21 @@ export async function getAllUserDevices(
       SELECT device_id FROM devices WHERE user_email = ${email}
     `;
   } catch (error) {
-    return { status: { error: "Could not read from database", code: 7 } };
+    return {
+      status: {
+        error: "Could not read from database",
+        code: ErrorCode.CouldNotReadFromDatabase,
+      },
+    };
   }
 
   if (!result) {
-    return { status: { error: "User has no associated devices", code: 9 } };
+    return {
+      status: {
+        error: "User has no associated devices",
+        code: ErrorCode.UserHasNoDevices,
+      },
+    };
   }
 
   const devices: Array<DeviceDetails> = [];
@@ -138,7 +166,12 @@ export async function getAllUserDevices(
       console.log(`failed on device ${device.device_id}
         ${JSON.stringify(error)}`);
 
-      return { status: { error: "Could not read from database", code: 7 } };
+      return {
+        status: {
+          error: "Could not read from database",
+          code: ErrorCode.CouldNotReadFromDatabase,
+        },
+      };
     }
 
     for (let i = 0; i < result.length; i++) {
@@ -166,12 +199,22 @@ export async function getUserHash(
       SELECT pass FROM users WHERE email = ${email}
     `;
   } catch (error) {
-    return { status: { error: "Could not read from database", code: 7 } };
+    return {
+      status: {
+        error: "Could not read from database",
+        code: ErrorCode.CouldNotReadFromDatabase,
+      },
+    };
   }
 
   // if the email is not recognised by the database, i.e. it returns no rows, return an error
   if (!result) {
-    return { status: { error: "User does not exist", code: 6 } };
+    return {
+      status: {
+        error: "User does not exist",
+        code: ErrorCode.UserDoesNotExist,
+      },
+    };
   }
 
   return { status: SUCCESS, hash: result[0].pass };
@@ -189,11 +232,21 @@ export async function getUserDetails(
       SELECT name, email FROM users WHERE email = ${email}
     `;
   } catch (error) {
-    return { status: { error: "Could not read from database", code: 7 } };
+    return {
+      status: {
+        error: "Could not read from database",
+        code: ErrorCode.CouldNotReadFromDatabase,
+      },
+    };
   }
 
   if (!result) {
-    return { status: { error: "User does not exist", code: 6 } };
+    return {
+      status: {
+        error: "User does not exist",
+        code: ErrorCode.UserDoesNotExist,
+      },
+    };
   }
 
   const userDetails: UserDetails = {
@@ -208,7 +261,7 @@ export async function getUserDetails(
 export async function getLeaderboardData() {
   let result;
 
-  try { 
+  try {
     result = await sql`
       SELECT users.name, devices.device_id, 
       SUM(recycling_types.count) FILTER (where recycling_types.type <> 'Non-Recyclable') * 100 / sum(recycling_types.count) AS score
@@ -216,35 +269,43 @@ export async function getLeaderboardData() {
       INNER JOIN devices ON users.email=devices.user_email 
       INNER JOIN recycling_types ON devices.device_id=recycling_types.device_id
       GROUP BY users.name, devices.device_id  
-    `
+    `;
   } catch (error) {
-    return { status: { error: "Could not read from database", code: 7 } };
+    return {
+      status: {
+        error: "Could not read from database",
+        code: ErrorCode.CouldNotReadFromDatabase,
+      },
+    };
   }
 
-  return { status: SUCCESS, result: result};
+  return { status: SUCCESS, result: result };
 }
 
-export async function incrementDeviceScore(
-  device_id: string, 
-  type: string
-) {
+export async function incrementDeviceScore(device_id: string, type: string) {
   // is this a real device?
   let result;
 
   try {
     result = await sql`
       select * from devices where device_id = ${device_id}
-      `
+      `;
   } catch (error) {
-    return { error: "Could not read from database", code: 7 };
+    return {
+      error: "Could not read from database",
+      code: ErrorCode.CouldNotReadFromDatabase,
+    };
   }
 
   console.log(result);
 
   if (!result) {
-    return { error: "Device does not exist", code: 10 };
+    return {
+      error: "Device does not exist",
+      code: ErrorCode.DeviceDoesNotExist,
+    };
   }
-  
+
   let result2;
 
   try {
@@ -252,9 +313,12 @@ export async function incrementDeviceScore(
       UPDATE recycling_types
       SET count = count + 1 
       WHERE device_id = ${device_id} AND type = ${type}
-    `
+    `;
   } catch (error) {
-    return { error: "Could not write to database", code: 4 };
+    return {
+      error: "Could not write to database",
+      code: ErrorCode.CouldNotOpenDatabase,
+    };
   }
 
   return SUCCESS;
