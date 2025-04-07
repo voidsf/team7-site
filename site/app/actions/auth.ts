@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 
 import { SignupFormValidation } from "../lib/definitions";
 import { FormState } from "../lib/definitions";
-import { createSession } from "../lib/session";
+import { createSession, deleteSession } from "../lib/session";
 
 export async function signup(
   state: FormState,
@@ -85,4 +85,9 @@ export async function login(
   } else {
     return { errors: { email: ["User not found"] } };
   }
+}
+
+export async function logout() {
+  await deleteSession();
+  redirect("/login");
 }
