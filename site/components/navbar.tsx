@@ -18,10 +18,11 @@ import { Button } from "@heroui/button";
 
 import { siteConfig } from "@/config/site";
 import { deleteSession } from "@/app/lib/session";
+import { logout } from "@/app/actions/auth";
 
 export function Navbar({ sessionStatus }: { sessionStatus: boolean }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [state, action, pending] = useActionState(deleteSession, undefined);
+  const [state, action, pending] = useActionState(logout, undefined);
 
   return (
     <HeroUINavbar
