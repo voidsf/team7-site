@@ -1,5 +1,4 @@
 import { incrementDeviceScore } from "@/database/database";
-import { Enriqueta } from "next/font/google";
 
 interface DeviceUpdatePostRequest {
     device_id: string;
