@@ -16,7 +16,7 @@ export type DeviceDetails = {
   types: Array<{ type_name: string; count: number }>;
 };
 
-enum ErrorCode {
+export enum ErrorCode {
   Success = 0,
   DatabaseDoesNotExist,
   UserAlreadyExists,
